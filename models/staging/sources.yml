@@ -5,7 +5,145 @@ sources:
     schema: fpl_raw
     tables:
       - name: fixtures
+        description: Fixture data for FPL matches
+        columns:
+          - name: FIXTURE_ID
+            description: Unique identifier for the fixture
+            tests:
+              - not_null
+              - unique
+          - name: GAMEWEEK_ID
+            description: Gameweek identifier for the fixture
+            tests:
+              - not_null
+          - name: KICKOFF_TIME
+            description: Kickoff time for the fixture
+          - name: TEAM_H
+            description: Home team identifier
+          - name: TEAM_A
+            description: Away team identifier
+          - name: TEAM_H_SCORE
+            description: Home team score
+          - name: TEAM_A_SCORE
+            description: Away team score
+          - name: FINISHED
+            description: Whether the fixture has finished
+
       - name: gameweeks
+        description: Gameweek data including deadlines and scores
+        columns:
+          - name: GAMEWEEK_ID
+            description: Unique identifier for the gameweek
+            tests:
+              - not_null
+              - unique
+          - name: IS_CURRENT
+            description: Whether this is the current gameweek
+          - name: DEADLINE_TIME
+            description: Deadline time for the gameweek
+          - name: FINISHED
+            description: Whether the gameweek has finished
+          - name: IS_NEXT
+            description: Whether this is the next gameweek
+          - name: IS_PREVIOUS
+            description: Whether this is the previous gameweek
+          - name: AVERAGE_ENTRY_SCORE
+            description: Average score for entries in this gameweek
+          - name: HIGHEST_SCORE
+            description: Highest score in this gameweek
+          - name: MOST_SELECTED
+            description: Most selected player in this gameweek
+          - name: MOST_TRANSFERRED_IN
+            description: Most transferred in player in this gameweek
+          - name: MOST_CAPTAINED
+            description: Most captained player in this gameweek
+          - name: MOST_VICE_CAPTAINED
+            description: Most vice captained player in this gameweek
+          - name: INGESTION_TIMESTAMP
+            description: Timestamp when the data was ingested
+
       - name: players
+        description: Player statistics and details
+        columns:
+          - name: PLAYER_ID
+            description: Unique identifier for the player
+            tests:
+              - not_null
+              - unique
+          - name: POSITION_ID
+            description: Unique identifier for the player's position
+            tests:
+              - not_null
+          - name: TEAM_ID
+            description: Unique identifier for the player's team
+            tests:
+              - not_null
+          - name: FIRST_NAME
+            description: Player's first name
+          - name: SECOND_NAME
+            description: Player's second name
+          - name: WEB_NAME
+            description: Player's web name (display name on FPL website)
+          - name: NOW_COST
+            description: Current cost of the player
+          - name: MINUTES
+            description: Total minutes played 
+          - name: GOALS_SCORED
+            description: Total goals scored 
+          - name: GOALS_CONCEDED
+            description: Total goals conceded
+          - name: ASSISTS
+            description: Total assists
+          - name: CLEAN_SHEETS
+            description: Total clean sheets kept 
+          - name: BONUS
+            description: Total bonus points 
+          - name: CHANCE_OF_PLAYING_NEXT_ROUND
+            description: Odds for next gameweek
+          - name: TOTAL_POINTS
+            description: Total points for the player
+          - name: FORM
+            description: Recent form of the player 
+          - name: SELECTED_BY_PERCENT
+            description: Percentage of fantasy managers who have selected this player
+          - name: STATUS
+            description: Player's current status (a=available, u=unavailable, s=suspended, i=injured, d=doubtful, n=not playing)
+          - name: GAMEWEEK_FETCHED
+            description: Gameweek when the data was fetched
+          - name: INGESTION_TIMESTAMP
+            description: Timestamp when the data was ingested
+  
       - name: teams
-      
+        description: Team information and fixtures
+        columns:
+          - name: TEAM_ID
+            description: Unique identifier for the team
+            tests:
+              - not_null
+              - unique
+          - name: NAME
+            description: Full name of the team
+          - name: SHORT_NAME
+            description: Short name of the team
+          - name: POINTS
+            description: Total points for the team
+          - name: FORM
+            description: Recent form of the team
+          - name: POSITION
+            description: Current position in the league table
+          - name: STRENGTH
+            description: Team strength rating
+          - name: STRENGTH_ATTACK_AWAY
+            description: Away attack strength
+          - name: STRENGTH_DEFENCE_AWAY
+            description: Away defence strength
+          - name: STRENGTH_ATTACK_HOME
+            description: Home attack strength
+          - name: STRENGTH_DEFENCE_HOME
+            description: Home defence strength
+          - name: STRENGTH_OVERALL_AWAY
+            description: Overall away strength
+          - name: STRENGTH_OVERALL_HOME
+            description: Overall home strength
+          - name: INGESTION_TIMESTAMP
+            description: Timestamp when the data was ingested
