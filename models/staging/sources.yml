@@ -1,0 +1,11 @@
+version: 2
+sources:
+  - name: fpl_raw
+    database: fpl_db
+    schema: fpl_raw
+    tables:
+      - name: fixtures
+      - name: gameweek
+      - name: players
+      - name: teams
+      
