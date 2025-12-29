@@ -5,7 +5,7 @@ sources:
     schema: fpl_raw
     tables:
       - name: fixtures
-      - name: gameweek
+      - name: gameweeks
       - name: players
       - name: teams
       
