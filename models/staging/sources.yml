@@ -4,6 +4,7 @@ sources:
     database: fpl_db
     schema: fpl_raw
     tables:
+    
       - name: fixtures
         description: Fixture data for FPL matches
         columns:
@@ -28,6 +29,10 @@ sources:
             description: Away team score
           - name: FINISHED
             description: Whether the fixture has finished
+        config:
+          freshness:
+            warn_after: {count: 7, period: day}
+            error_after: {count: 14, period: day}
 
       - name: gameweeks
         description: Gameweek data including deadlines and scores
@@ -61,6 +66,10 @@ sources:
             description: Most vice captained player in this gameweek
           - name: INGESTION_TIMESTAMP
             description: Timestamp when the data was ingested
+        config:
+          freshness:
+            warn_after: {count: 7, period: day}
+            error_after: {count: 14, period: day}
 
       - name: players
         description: Player statistics and details
@@ -112,6 +121,10 @@ sources:
             description: Gameweek when the data was fetched
           - name: INGESTION_TIMESTAMP
             description: Timestamp when the data was ingested
+        config:
+          freshness:
+            warn_after: {count: 7, period: day}
+            error_after: {count: 14, period: day}
   
       - name: teams
         description: Team information and fixtures
@@ -147,3 +160,7 @@ sources:
             description: Overall home strength
           - name: INGESTION_TIMESTAMP
             description: Timestamp when the data was ingested
+        config:
+          freshness:
+            warn_after: {count: 7, period: day}
+            error_after: {count: 14, period: day}
