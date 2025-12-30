@@ -1,0 +1,89 @@
+version: 2
+
+models:
+    - name: stg_players
+      description: Player statistics and details
+      columns:
+        - name: player_id
+          description: Unique identifier for the player
+          tests:
+            - not_null
+            - unique
+        - name: position_id
+          description: Unique identifier for the player's position
+          tests:
+            - not_null
+        - name: team_id
+          description: Unique identifier for the player's team
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_teams')
+                  field: team_id
+        
+        - name: first_name
+          description: Player's first name
+          tests:
+            - not_null
+        - name: second_name
+          description: Player's second name
+          tests:
+            - not_null
+        - name: web_name
+          description: Player's web name (display name on FPL website)
+          tests:
+            - not_null
+
+        - name: now_cost
+          description: Current cost of the player
+          tests:
+            - not_null
+        - name: total_minutes
+          description: Total minutes played
+          tests:
+            - not_null
+        - name: goals_scored
+          description: Total goals scored
+          tests:
+            - not_null
+        - name: goals_conceded
+          description: Total goals conceded
+          tests:
+            - not_null
+        - name: assists
+          description: Total assists
+          tests:
+            - not_null
+        - name: clean_sheets
+          description: Total clean sheets kept
+          tests:
+            - not_null
+        - name: bonus
+          description: Total bonus points
+          tests:
+            - not_null
+        - name: next_gameweek_odds
+          description: Odds for next gameweek
+          tests:
+            - not_null
+        - name: total_points
+          description: Total points for the player
+          tests:
+            - not_null
+        - name: form
+          description: Recent form of the player
+          tests:
+            - not_null
+        - name: selected_by_percent
+          description: Percentage of fantasy managers who have selected this player
+          tests:
+            - not_null
+        - name: status
+          description: Player's current status (a=available, u=unavailable, s=suspended, i=injured, d=doubtful, n=not playing)
+          tests:
+            - not_null
+        - name: gameweek_fetched
+          description: Gameweek when the data was fetched
+        - name: ingestion_timestamp
+          description: Timestamp when the data was ingested

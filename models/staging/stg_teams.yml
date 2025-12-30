@@ -1,0 +1,63 @@
+version: 2
+
+models:
+      - name: stg_teams
+        description: Team information and fixtures
+        columns:
+          - name: team_id
+            description: Unique identifier for the team
+            tests:
+              - not_null
+              - unique
+          - name: team_name
+            description: Full name of the team
+            tests:
+              - not_null
+          - name: short_name
+            description: Short name of the team
+            tests:
+              - not_null
+          - name: team_points
+            description: Total points for the team
+            tests:
+              - not_null
+          - name: team_form
+            description: Recent form of the team
+          - name: team_position
+            description: Current position in the league table
+            tests:
+              - not_null
+          - name: team_strength
+            description: Team strength rating
+            tests:
+              - not_null
+          - name: strength_attack_away
+            description: Away attack strength
+            tests:
+              - not_null
+          - name: strength_defence_away
+            description: Away defence strength
+            tests:
+              - not_null
+          - name: strength_attack_home
+            description: Home attack strength
+            tests:
+              - not_null
+          - name: strength_defence_home
+            description: Home defence strength
+            tests:
+              - not_null
+          - name: strength_overall_away
+            description: Overall away strength
+            tests:
+              - not_null
+          - name: strength_overall_home
+            description: Overall home strength
+            tests:
+              - not_null
+          - name: ingestion_at
+            description: Timestamp when the data was ingested
+            tests:
+              - not_null
+
+
