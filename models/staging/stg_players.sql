@@ -1,3 +1,9 @@
+/*
+This model transforms raw player data from the FPL API into a clean, structured format.
+It extracts player attributes including position, team, cost, and cumulative season statistics.
+This represents a snapshot of player data at the time of ingestion, not historical gameweek data.
+*/
+
 WITH source AS (
     SELECT *
     FROM {{ source('fpl_raw', 'players') }}

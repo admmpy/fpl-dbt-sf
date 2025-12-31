@@ -1,3 +1,10 @@
+/*
+This model transforms raw player history data from the FPL API into a clean, structured format.
+It extracts player performance metrics for each fixture, including points scored,
+goals, assists, and other key statistics. The data is flattened from JSON format
+and cast to appropriate data types for analysis. */
+
+
 WITH source AS (
     SELECT * 
     FROM {{ source('fpl_raw', 'raw_element_summary') }}

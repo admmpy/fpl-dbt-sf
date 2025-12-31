@@ -1,3 +1,9 @@
+/*
+This model transforms raw gameweek data from the FPL API into a clean, structured format.
+It extracts gameweek metadata including deadlines, completion status, and aggregated statistics.
+This provides context for when gameweeks occur and their overall performance metrics.
+*/
+
 WITH source AS (
     SELECT * 
     FROM {{ source('fpl_raw', 'gameweeks') }}

@@ -1,3 +1,9 @@
+/*
+This model transforms raw fixture data from the FPL API into a clean, structured format.
+It extracts match fixture details including gameweek, kickoff time, teams, and scores.
+The data is cast to appropriate data types for analysis and joined with other models.
+*/
+
 WITH sourced AS (
     SELECT *
     FROM {{ source('fpl_raw', 'fixtures') }}

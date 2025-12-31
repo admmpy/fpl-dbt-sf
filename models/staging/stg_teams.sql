@@ -1,3 +1,9 @@
+/*
+This model transforms raw team data from the FPL API into a clean, structured format.
+It extracts team information including name, points, position, and strength ratings.
+Strength ratings are provided for home/away attack and defense, useful for opponent analysis.
+*/
+
 WITH source AS (
     SELECT * 
     FROM {{ source('fpl_raw', 'teams') }}
