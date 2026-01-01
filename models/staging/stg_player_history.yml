@@ -3,14 +3,17 @@ version: 2
 models:
     - name: stg_player_history
       description: Player history data for FPL matches
+      tests:
+        - dbt_utils.unique_combination_of_columns:
+            arguments:
+              combination_of_columns:
+                - player_id
+                - gameweek_id
       columns:
         - name: player_id
           description: Unique identifier for the player
           tests:
             - not_null
-            - unique:
-                arguments:
-                  combination: ["player_id", "gameweek_id"]
         - name: gameweek_id
           description: Gameweek identifier for the player history
           tests:

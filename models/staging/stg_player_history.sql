@@ -46,10 +46,24 @@ flattened AS (
         f.value:expected_assists::FLOAT                 AS expected_assists,
         f.value:expected_goal_involvements::FLOAT       AS expected_goal_involvements,
         f.value:expected_goals_conceded::FLOAT          AS expected_goals_conceded,
-        f.value:value::FLOAT / 10                       AS value
+        f.value:value::FLOAT / 10                       AS value,
+        ingestion_timestamp                             AS ingestion_at
     FROM source,
-        LATERAL flatten(input => source.data:history) AS f 
+        LATERAL flatten(input => data:history) AS f 
+),
+
+deduped AS (
+    SELECT *
+    FROM flattened
+    QUALIFY ROW_NUMBER() OVER (
+        PARTITION BY player_id ORDER BY ingestion_at DESC
+    ) = 1
+),
+
+final AS (
+    SELECT *
+    FROM deduped
 )
 
-SELECT * 
-FROM flattened
+SELECT *
+FROM final
