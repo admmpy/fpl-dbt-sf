@@ -17,7 +17,7 @@ cleaned AS (
         TEAM_H          AS home_team_id,
         TEAM_A          AS away_team_id,
         TEAM_H_SCORE    AS home_team_score,
-        TEAM_H_SCORE    AS away_team_score,
+        TEAM_A_SCORE    AS away_team_score,
         FINISHED        AS has_finished
 
     FROM sourced

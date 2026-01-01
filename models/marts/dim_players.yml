@@ -1,0 +1,38 @@
+version: 2
+
+models:
+    - name: dim_players
+      description: Player table showing latest player details and value
+      columns:
+       - name: player_id
+         description: Player identifier (Primary Key)
+         tests:
+         - not_null
+         - unique
+       - name: position_id
+         description: Player position identifier
+         tests:
+         - not_null
+       - name: team_id
+         description: Player team identifier
+         tests:
+         - not_null
+       - name: team_name
+         description: Player team name
+         tests:
+         - not_null
+       - name: first_name
+         description: Player first name
+         tests:
+         - not_null
+       - name: second_name
+         description: Player second name
+         tests:
+         - not_null
+       - name: web_name
+         description: Player web name
+         tests:
+         - not_null
+       - name: value
+         description: Player value # excluding test for now since pipeline was run to only fetch 10 players for testing.
+
