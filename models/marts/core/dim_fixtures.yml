@@ -31,7 +31,7 @@ models:
           description: Home team score
         - name: away_team_score
           description: Away team score
-        - name: has_finished
+        - name: is_finished
           description: Whether the fixture has finished
           tests:
               - accepted_values:

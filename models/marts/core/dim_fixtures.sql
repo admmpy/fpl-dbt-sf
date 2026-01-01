@@ -9,7 +9,7 @@ WITH fixtures AS (
         fx.away_team_id,
         fx.home_team_score,
         fx.away_team_score,
-        fx.has_finished
+        fx.is_finished
 
     FROM {{ ref('stg_fixtures') }} AS fx
          LEFT JOIN {{ ref('dim_teams') }} AS ht ON fx.home_team_id = ht.team_id
