@@ -1,32 +1,40 @@
 WITH players AS (
     SELECT 
-        player_id,
-        position_id,
-        team_id,
-        first_name,
-        second_name,
-        web_name,
-        now_cost,
-        total_minutes,
-        goals_scored,
-        goals_conceded,
-        assists,
-        clean_sheets,
-        bonus,
-        next_gameweek_odds,
-        total_points,
-        form,
-        selected_by_percent,
-        status,
-        current_gameweek
+        p.player_id,
+        p.position_id,
+        p.team_id,
+        t.team_name,
+        p.first_name,
+        p.second_name,
+        p.web_name,
 
-    FROM {{ ref('stg_players') }}
+
+    FROM {{ ref('stg_players') }} AS p
+         LEFT JOIN {{ ref('stg_teams') }} AS t ON p.team_id = t.team_id
+),
+
+player_history AS (
+    SELECT
+        player_id,
+        value
+
+    FROM {{ ref('stg_player_history') }}
+    QUALIFY ROW_NUMBER() OVER (PARTITION BY player_id ORDER BY gameweek_id DESC) = 1 
 ),
 
 final AS (
     SELECT
-        *
-    FROM players
+        p.player_id,
+        p.position_id,
+        p.team_id,
+        p.team_name,
+        p.first_name,
+        p.second_name,
+        p.web_name,
+        h.value
+
+    FROM players AS p
+    LEFT JOIN player_history AS h ON p.player_id = h.player_id
 )
 
 SELECT * 

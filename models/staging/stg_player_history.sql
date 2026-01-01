@@ -46,7 +46,7 @@ flattened AS (
         f.value:expected_assists::FLOAT                 AS expected_assists,
         f.value:expected_goal_involvements::FLOAT       AS expected_goal_involvements,
         f.value:expected_goals_conceded::FLOAT          AS expected_goals_conceded,
-        f.value:value::INTEGER                          AS value
+        f.value:value::FLOAT / 10                       AS value
     FROM source,
         LATERAL flatten(input => source.data:history) AS f 
 )
