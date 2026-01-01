@@ -1,13 +1,20 @@
 WITH fixtures AS (
-    SELECT *
-    FROM {{ ref('stg_fixtures') }}
-),
+    SELECT 
+        fx.fixture_id,
+        fx.gameweek_id,
+        fx.kickoff_at,
+        ht.team_name        AS home_team_name,
+        fx.home_team_id,
+        at.team_name        AS away_team_name,
+        fx.away_team_id,
+        fx.home_team_score,
+        fx.away_team_score,
+        fx.has_finished
 
-final AS (
-    SELECT
-        *
-    FROM fixtures
+    FROM {{ ref('stg_fixtures') }} AS fx
+         LEFT JOIN {{ ref('dim_teams') }} AS ht ON fx.home_team_id = ht.team_id
+         LEFT JOIN {{ ref('dim_teams') }} AS at ON fx.away_team_id = at.team_id
 )
 
 SELECT * 
-FROM final
+FROM fixtures
