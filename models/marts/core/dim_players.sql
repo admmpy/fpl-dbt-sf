@@ -1,3 +1,8 @@
+/*
+This model creates a player dimension table by joining player data with team information.
+It includes the latest player value from their most recent gameweek performance.
+*/
+
 WITH players AS (
     SELECT 
         p.player_id,

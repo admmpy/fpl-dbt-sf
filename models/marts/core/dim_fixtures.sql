@@ -1,3 +1,9 @@
+/*
+This model creates a fixture dimension table by joining fixture data with team information.
+It enriches the fixture details with home and away team names, providing a complete view of all match fixtures.
+*/
+
+
 WITH fixtures AS (
     SELECT 
         fx.fixture_id,

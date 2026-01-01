@@ -146,5 +146,7 @@ models:
           description: Expected goals conceded in the fixture
           tests:
             - not_null
-        - name: player_value
+        - name: value
           description: Player value in the fixture
+        - name: ingestion_at
+          description: timestamp of when the data was ingested
