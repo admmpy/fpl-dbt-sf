@@ -7,42 +7,44 @@ dimensions to enrich the performance data with team context and strength metrics
 */
 
 WITH performance AS (
-    SELECT  
-        player_id,
-        gameweek_id,
-        fixture_id,
-        opponent_team_id,
-        total_points,
-        was_home,
-        minutes_played,
-        goals_scored,
-        expected_goals,
-        expected_goal_involvements,
-        assists,
-        expected_assists,
-        clean_sheets,
-        goals_conceded,
-        expected_goals_conceded,
-        yellow_cards,
-        red_cards,
-        saves,
-        bonus,
-        influence,
-        creativity,
-        threat,
-        ict_index,
-        value
+    SELECT
+        pl.web_name,
+        ph.player_id,
+        ph.gameweek_id,
+        ph.fixture_id,
+        pl.team_id,
+        ph.opponent_team_id,
+        ph.total_points,
+        ph.was_home,
+        ph.minutes_played,
+        ph.goals_scored,
+        ph.expected_goals,
+        ph.expected_goal_involvements,
+        ph.assists,
+        ph.expected_assists,
+        ph.clean_sheets,
+        ph.goals_conceded,
+        ph.expected_goals_conceded,
+        ph.yellow_cards,
+        ph.red_cards,
+        ph.saves,
+        ph.bonus,
+        ph.influence,
+        ph.creativity,
+        ph.threat,
+        ph.ict_index,
+        ph.value
 
-    FROM {{ ref('stg_player_history') }}
+    FROM {{ ref('stg_player_history') }}    AS ph
+         LEFT JOIN {{ ref('dim_players') }} AS pl ON ph.player_id = pl.player_id
 ),
 
 opponent_strength AS (
     SELECT 
         pe.*,
-        tm.team_id,
         CASE 
-            WHEN pe.was_home THEN tm.strength_defence_home  
-            ELSE  tm.strength_defence_away
+            WHEN pe.was_home THEN tm.strength_defence_away
+            ELSE  tm.strength_defence_home
         END                                                     AS opponent_defence_strength
         FROM performance                        AS pe
              LEFT JOIN {{ ref('dim_teams') }}   AS tm ON pe.opponent_team_id = tm.team_id
@@ -61,13 +63,11 @@ team_context AS (
 
 final AS (
     SELECT
-        pl.web_name,
+        {{ dbt_utils.generate_surrogate_key(['tc.player_id', 'tc.gameweek_id']) }} AS player_gameweek_key,
         tc.*,
 
 
-    FROM team_context                           AS tc
-         INNER JOIN {{ ref('dim_players')}}      AS pl ON tc.player_id = pl.player_id
-
+    FROM team_context                            AS tc
 )
 
 SELECT 

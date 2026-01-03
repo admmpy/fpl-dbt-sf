@@ -11,6 +11,11 @@ models:
               - gameweek_id
 
     columns:
+      - name: player_gameweek_key
+        description: Primary key generate from player_id and gameweek_id
+        tests:
+          - not_null
+          - unique
       - name: web_name
         description: Player web name 
         tests:
