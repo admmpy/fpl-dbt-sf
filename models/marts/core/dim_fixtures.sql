@@ -1,3 +1,9 @@
+/*
+This model creates a fixture dimension table by joining fixture data with team information.
+It enriches the fixture details with home and away team names, providing a complete view of all match fixtures.
+*/
+
+
 WITH fixtures AS (
     SELECT 
         fx.fixture_id,
@@ -9,7 +15,7 @@ WITH fixtures AS (
         fx.away_team_id,
         fx.home_team_score,
         fx.away_team_score,
-        fx.has_finished
+        fx.is_finished
 
     FROM {{ ref('stg_fixtures') }} AS fx
          LEFT JOIN {{ ref('dim_teams') }} AS ht ON fx.home_team_id = ht.team_id

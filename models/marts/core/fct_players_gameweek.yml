@@ -1,0 +1,129 @@
+version: 2
+
+models:
+  - name: fct_players_gameweek
+    description: Fact table showing player performance by gameweek
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - player_id
+              - gameweek_id
+
+    columns:
+      - name: player_gameweek_key
+        description: Primary key generate from player_id and gameweek_id
+        tests:
+          - not_null
+          - unique
+      - name: web_name
+        description: Player web name 
+        tests:
+          - not_null
+      - name: player_id
+        description: Player identifier
+        tests:
+          - not_null
+      - name: gameweek_id
+        description: Gameweek identifier
+        tests:
+          - not_null
+      - name: fixture_id
+        description: Fixture identifier
+        tests:
+          - not_null
+      - name: total_points
+        description: Total points scored in the gameweek
+        tests:
+          - not_null
+      - name: was_home
+        description: Whether the player was playing at home
+        tests:
+          - not_null
+      - name: minutes_played
+        description: Minutes played in the gameweek
+        tests:
+          - not_null
+      - name: goals_scored
+        description: Goals scored in the gameweek
+        tests:
+          - not_null
+      - name: expected_goals
+        description: Expected goals in the gameweek
+        tests:
+          - not_null
+      - name: expected_goal_involvements
+        description: Expected goal involvements in the gameweek
+        tests:
+          - not_null
+      - name: assists
+        description: Assists in the gameweek
+        tests:
+          - not_null
+      - name: expected_assists
+        description: Expected assists in the gameweek
+        tests:
+          - not_null
+      
+      - name: clean_sheets
+        description: Clean sheets in the gameweek
+        tests:
+          - not_null
+      - name: goals_conceded
+        description: Goals conceded in the gameweek
+        tests:
+          - not_null
+      - name: expected_goals_conceded
+        description: Expected goals conceded in the gameweek
+        tests:
+          - not_null
+      - name: yellow_cards
+        description: Yellow cards in the gameweek
+        tests:
+          - not_null
+      - name: red_cards
+        description: Red cards in the gameweek
+        tests:
+          - not_null
+      - name: saves
+        description: Saves in the gameweek
+        tests:
+          - not_null
+      - name: bonus
+        description: Bonus points in the gameweek
+        tests:
+          - not_null
+      - name: influence
+        description: Influence score in the gameweek
+        tests:
+          - not_null
+      - name: creativity
+        description: Creativity score in the gameweek
+        tests:
+          - not_null
+      - name: threat
+        description: Threat score in the gameweek
+        tests:
+          - not_null
+      - name: ict_index
+        description: ICT index score in the gameweek
+        tests:
+          - not_null
+      - name: value
+        description: Player value in the gameweek
+        tests:
+          - not_null
+      - name: team_id
+        description: Identifier for the player's team
+        tests:
+          - not_null
+      - name: opponent_defence_strength
+        description: Defense strength of the opponent team
+        tests:
+          - not_null
+      - name: team_attack_strength
+        description: Attack strength of player team
+        tests:
+          - not_null
+
+      

@@ -48,6 +48,7 @@ flattened AS (
         f.value:expected_goals_conceded::FLOAT          AS expected_goals_conceded,
         f.value:value::FLOAT / 10                       AS value,
         ingestion_timestamp                             AS ingestion_at
+        
     FROM source,
         LATERAL flatten(input => data:history) AS f 
 ),
@@ -56,7 +57,7 @@ deduped AS (
     SELECT *
     FROM flattened
     QUALIFY ROW_NUMBER() OVER (
-        PARTITION BY player_id ORDER BY ingestion_at DESC
+        PARTITION BY player_id, gameweek_id ORDER BY ingestion_at DESC
     ) = 1
 ),
 

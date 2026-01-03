@@ -1,3 +1,9 @@
+/* 
+This model creates a dimension table for team information,
+including team details, current standings, and strength metrics
+for both home and away performance.
+*/
+
 WITH teams AS (
     SELECT
         team_id,

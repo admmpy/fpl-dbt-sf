@@ -14,7 +14,7 @@ models:
           tests:
             - not_null
         - name: team_id
-          description: Unique identifier for the player's team
+          description: Identifier for the player's team
           tests:
             - not_null
             - relationships:
