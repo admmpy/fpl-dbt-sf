@@ -35,8 +35,8 @@ WITH performance AS (
         ph.ict_index,
         ph.value
 
-    FROM {{ ref('stg_player_history') }}    AS ph
-         LEFT JOIN {{ ref('dim_players') }} AS pl ON ph.player_id = pl.player_id
+    FROM {{ ref('stg_player_history') }}     AS ph
+         INNER JOIN {{ ref('dim_players') }} AS pl ON ph.player_id = pl.player_id
 ),
 
 opponent_strength AS (
