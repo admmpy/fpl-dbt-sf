@@ -33,6 +33,8 @@ models:
          description: Player web name
          tests:
          - not_null
-       - name: value
-         description: Player value # excluding test for now since pipeline was run to only fetch 10 players for testing.
+       - name: current_value
+         description: Player value
+         tests:
+         - not_null
 
