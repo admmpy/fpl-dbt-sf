@@ -39,6 +39,9 @@ models:
           description: Current cost of the player
           tests:
             - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
         - name: total_minutes
           description: Total minutes played
           tests:

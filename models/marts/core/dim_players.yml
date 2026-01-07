@@ -17,10 +17,6 @@ models:
          description: Player team identifier
          tests:
          - not_null
-       - name: team_name
-         description: Player team name
-         tests:
-         - not_null
        - name: first_name
          description: Player first name
          tests:
@@ -37,4 +33,7 @@ models:
          description: Player value
          tests:
          - not_null
+         - dbt_utils.expression_is_true:
+             arguments:
+               expression: ">= 0"
 
