@@ -45,7 +45,7 @@ opponent_strength AS (
         CASE 
             WHEN pe.was_home THEN tm.strength_defence_away
             ELSE  tm.strength_defence_home
-        END                                                     AS opponent_defence_strength
+        END                                                                       AS opponent_defence_strength
         FROM performance                        AS pe
              LEFT JOIN {{ ref('dim_teams') }}   AS tm ON pe.opponent_team_id = tm.team_id
 ),
@@ -56,7 +56,7 @@ team_context AS (
         CASE 
             WHEN oc.was_home THEN tm.strength_attack_home
             ELSE tm.strength_attack_away
-        END                                                     AS team_attack_strength
+        END                                                                       AS team_attack_strength
     FROM opponent_strength              AS oc      
     LEFT JOIN {{ ref('dim_teams') }}    AS tm ON oc.team_id = tm.team_id
 ),
@@ -64,13 +64,38 @@ team_context AS (
 final AS (
     SELECT
         {{ dbt_utils.generate_surrogate_key(['tc.player_id', 'tc.gameweek_id']) }} AS player_gameweek_key,
-        tc.*,
+        web_name,
+        player_id,
+        gameweek_id,
+        fixture_id,
+        team_id,
+        opponent_team_id,
+        total_points,
+        was_home,
+        minutes_played,
+        goals_scored,
+        expected_goals,
+        expected_goal_involvements,
+        assists,
+        expected_assists,
+        clean_sheets,
+        goals_conceded,
+        expected_goals_conceded,
+        yellow_cards,
+        red_cards,
+        saves,
+        bonus,
+        influence,
+        creativity,
+        threat,
+        ict_index,
+        value,
+        opponent_defence_strength,
+        team_attack_strength
 
 
     FROM team_context                            AS tc
 )
 
-SELECT 
-    *
+SELECT *
 FROM final
-

@@ -46,7 +46,6 @@ cleaned AS (
                 THEN 'Not playing'  -- cannot find official doc on what 'n' means (likely "not playing" or similar)
             ELSE STATUS
         END                                             AS status,
-        
         GAMEWEEK_FETCHED                                AS current_gameweek,
         INGESTION_TIMESTAMP                             AS ingestion_at
 
