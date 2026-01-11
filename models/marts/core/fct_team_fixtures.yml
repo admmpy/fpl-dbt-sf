@@ -1,0 +1,151 @@
+version: 2
+
+models:
+  - name: fct_team_fixtures
+    description: |
+      Fact table containing team-level performance metrics for each fixture.
+      Grain: One row per team per gameweek (team_id x gameweek_id).
+      
+      This table aggregates player-level statistics to the team level and enriches
+      with fixture context and team attributes. Includes both actual match results
+      (goals scored/conceded) and expected metrics (xG, xA, xGC).
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - team_id
+              - gameweek_id
+      
+    columns:
+      - name: team_fixture_key
+        description: Primary key generated from team_id and gameweek_id
+        tests:
+          - not_null
+          - unique
+          
+      - name: team_id
+        description: Team identifier
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_teams')
+                field: team_id
+              
+      - name: gameweek_id
+        description: Gameweek identifier 
+        tests:
+          - not_null
+          
+      - name: fixture_id
+        description: Fixture identifier
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_fixtures')
+                field: fixture_id
+              
+      - name: opponent_team_id
+        description: ID of the opposing team in this fixture
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_teams')
+                field: team_id
+              
+      - name: was_home
+        description: Boolean indicating if the team played at home (TRUE) or away (FALSE)
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+              
+      - name: team_score
+        description: Goals scored by the team in this fixture (actual match result)
+        
+      - name: opponent_score
+        description: Goals scored by the opponent in this fixture (actual match result)
+        
+      - name: is_finished
+        description: Boolean indicating if the fixture has been completed
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [true, false]
+
+      # Aggregated Team Performance Metrics
+      - name: goals_scored
+        description: Total goals scored by all players on the team in this fixture
+        
+      - name: goals_conceded
+        description: Total goals conceded by the team in this fixture
+        
+      - name: assists
+        description: Total assists by all players on the team in this fixture
+        
+      - name: clean_sheets
+        description: Clean sheet indicator (aggregated at team level, typically 0 or 1 per player)
+        
+      - name: own_goals
+        description: Total own goals scored by the team in this fixture
+        
+      - name: penalties_saved
+        description: Total penalties saved by the team's goalkeeper(s) in this fixture
+        
+      - name: penalties_missed
+        description: Total penalties missed by the team in this fixture
+        
+      - name: yellow_cards
+        description: Total yellow cards received by the team in this fixture
+        
+      - name: red_cards
+        description: Total red cards received by the team in this fixture
+        
+      - name: expected_goals
+        description: Total expected goals (xG) for all players on the team in this fixture
+        
+      - name: expected_assists
+        description: Total expected assists (xA) for all players on the team in this fixture
+        
+      - name: expected_goal_involvements
+        description: Total expected goal involvements (xGI = xG + xA) for the team
+        
+      - name: expected_goals_conceded
+        description: Total expected goals conceded (xGC) by the team in this fixture
+
+      # Team Dimension Attributes
+      - name: team_points
+        description: Current total points for the team in the season standings
+        
+      - name: team_form
+        description: Recent form rating for the team
+        
+      - name: team_position
+        description: Current league position of the team
+        tests:
+          - not_null
+          
+      - name: team_strength
+        description: Overall strength rating of the team (1-5 scale)
+        
+      - name: strength_attack_away
+        description: Team's attacking strength rating when playing away
+        
+      - name: strength_defence_away
+        description: Team's defensive strength rating when playing away
+        
+      - name: strength_attack_home
+        description: Team's attacking strength rating when playing at home
+        
+      - name: strength_defence_home
+        description: Team's defensive strength rating when playing at home
+        
+      - name: strength_overall_away
+        description: Team's overall strength rating when playing away
+        
+      - name: strength_overall_home
+        description: Team's overall strength rating when playing at home
