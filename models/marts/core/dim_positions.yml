@@ -1,0 +1,15 @@
+version: 2
+
+models:
+    - name: dim_positions
+      description: Position dimension table showing position details
+      columns:
+        - name: position_id
+          description: Position identifier (Primary Key)
+          tests:
+            - not_null
+            - unique
+        - name: position_name
+          description: Position name
+          tests:
+            - not_null

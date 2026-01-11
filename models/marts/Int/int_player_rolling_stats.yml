@@ -1,0 +1,59 @@
+version: 2
+
+models:
+    - name: int_player_rolling_stats
+      description: Player rolling stats table showing rolling stats for each player
+      tests:
+        - dbt_utils.unique_combination_of_columns:
+            arguments:
+              combination_of_columns:
+                - player_id
+                - gameweek_id
+      columns:
+        - name: player_gameweek_key
+          description: Primary key generate from player_id and gameweek_id
+          tests:
+            - not_null
+            - unique
+
+        - name: player_id
+          description: Player identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_players')
+                  field: player_id
+
+        - name: gameweek_id
+          description: Gameweek identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_gameweeks')
+                  field: gameweek_id
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value:  0
+                  max_value: 38
+
+        - name: total_points
+          description: Total points scored
+          tests:
+            - not_null
+
+        - name: three_week_rolling_avg_points
+          description: Three week rolling average points
+
+        - name: five_week_rolling_avg_points
+          description: Five week rolling average points
+
+        - name: total_games_played
+          description: Total games played
+          tests:
+            - not_null
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 0
+                  max_value: 38
