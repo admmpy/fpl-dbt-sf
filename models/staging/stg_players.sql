@@ -20,7 +20,7 @@ cleaned AS (
         SECOND_NAME                                     AS second_name,
         WEB_NAME                                        AS web_name,  -- this is the name used on the FPL website and most straightforward display name
 
-        NOW_COST                                        AS now_cost,
+        NOW_COST / 10.0                                 AS now_cost,
         MINUTES                                         AS total_minutes,
         GOALS_SCORED                                    AS goals_scored,
         GOALS_CONCEDED                                  AS goals_conceded,
@@ -46,9 +46,8 @@ cleaned AS (
                 THEN 'Not playing'  -- cannot find official doc on what 'n' means (likely "not playing" or similar)
             ELSE STATUS
         END                                             AS status,
-        
         GAMEWEEK_FETCHED                                AS current_gameweek,
-        INGESTION_TIMESTAMP                             AS ingestion_at,
+        INGESTION_TIMESTAMP                             AS ingestion_at
 
     FROM source
 )

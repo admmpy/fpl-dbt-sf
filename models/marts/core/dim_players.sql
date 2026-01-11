@@ -8,7 +8,6 @@ WITH players AS (
         p.player_id,
         p.position_id,
         p.team_id,
-        t.team_name,
         p.first_name,
         p.second_name,
         p.web_name,
@@ -16,7 +15,6 @@ WITH players AS (
 
 
     FROM {{ ref('stg_players') }} AS p
-         LEFT JOIN {{ ref('dim_teams') }} AS t ON p.team_id = t.team_id
 ),
 
 final AS (
