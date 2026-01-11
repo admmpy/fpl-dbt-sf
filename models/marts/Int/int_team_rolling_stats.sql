@@ -1,3 +1,10 @@
+/*
+This model calculates 3-week rolling team performance statistics for each team and gameweek.
+It computes rolling averages for goals, expected goals, clean sheets, and wins to provide
+team form context for ML model predictions. Window functions exclude the current gameweek
+to prevent data leakage.
+*/
+
 WITH base_data AS (
     SELECT
         team_id,

@@ -1,3 +1,9 @@
+/*
+This model creates a denormalized feature table for machine learning model training.
+It combines player performance metrics with player and team rolling statistics, and league
+position context into a single table optimized for ML pipelines.
+*/
+
 WITH player_base AS (
     SELECT *
     FROM {{ ref('fct_players_gameweek') }}
