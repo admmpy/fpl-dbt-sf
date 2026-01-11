@@ -1,3 +1,9 @@
+/*
+This model calculates rolling player performance statistics for each player and gameweek.
+It computes 3-week and 5-week rolling averages of points scored, along with a total games
+played counter. Window functions exclude the current gameweek to prevent data leakage.
+*/
+
 WITH base_data AS (
     SELECT
         fct.player_id,
