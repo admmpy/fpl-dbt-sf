@@ -18,12 +18,12 @@ rolling_stats AS (
             PARTITION BY player_id 
             ORDER BY gameweek_id DESC
             ROWS BETWEEN 1 FOLLOWING AND 3 FOLLOWING
-            )                                                                      AS three_week_rolling_avg_points,
+            )                                                                      AS three_week_players_roll_avg_points,
         AVG(total_points) OVER (
             PARTITION BY player_id 
             ORDER BY gameweek_id DESC 
             ROWS BETWEEN 1 FOLLOWING AND 5 FOLLOWING
-            )                                                                      AS five_week_rolling_avg_points,
+            )                                                                      AS five_week_players_roll_avg_points,
 
     FROM base_data
 ),
@@ -47,8 +47,8 @@ final AS (
         rs.player_id,
         rs.gameweek_id,
         rs.total_points,
-        rs.three_week_rolling_avg_points,
-        rs.five_week_rolling_avg_points,
+        rs.three_week_players_roll_avg_points,
+        rs.five_week_players_roll_avg_points,
         gp.total_games_played
 
     FROM rolling_stats          AS rs

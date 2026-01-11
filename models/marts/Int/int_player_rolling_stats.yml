@@ -43,11 +43,11 @@ models:
           tests:
             - not_null
 
-        - name: three_week_rolling_avg_points
-          description: Three week rolling average points
+        - name: three_week_players_roll_avg_points
+          description: Three week players rolling average points
 
-        - name: five_week_rolling_avg_points
-          description: Five week rolling average points
+        - name: five_week_players_roll_avg_points
+          description: Five week players rolling average points
 
         - name: total_games_played
           description: Total games played
