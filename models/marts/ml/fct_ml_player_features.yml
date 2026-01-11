@@ -161,4 +161,52 @@ models:
                 arguments:
                   min_value: 0
                   max_value: 38
+
+        - name: opponent_team_id
+          description: Identifier for the opponent team
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_teams')
+                  field: team_id
+
+        - name: team_roll_avg_goals_scored
+          description: Three week rolling average of goals scored by the player's team
+
+        - name: team_roll_avg_xg
+          description: Three week rolling average of expected goals (xG) for the player's team
+
+        - name: team_roll_avg_clean_sheets
+          description: Three week rolling average clean sheet percentage (0-1 scale) for the player's team
+
+        - name: team_roll_avg_wins_pct
+          description: Three week rolling average win percentage (0-1 scale) for the player's team
+
+        - name: opponent_roll_avg_goals_conceded
+          description: Three week rolling average of goals conceded by the opponent team
+
+        - name: opponent_roll_avg_xg
+          description: Three week rolling average of expected goals conceded (xGC) by the opponent team
+
+        - name: team_position
+          description: Current league position of the player's team
+          tests:
+            - not_null
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 20
+
+        - name: opponent_team_position
+          description: Current league position of the opponent team
+          tests:
+            - not_null
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 20
+
+        - name: team_position_difference
+          description: Difference in league positions (team_position - opponent_team_position). Higher values indicate stronger opposition
        
