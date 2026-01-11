@@ -1,0 +1,57 @@
+version: 2
+
+models:
+    - name: int_team_rolling_stats
+      description: Team rolling stats table showing rolling team performance metrics for each team and gameweek
+      tests:
+        - dbt_utils.unique_combination_of_columns:
+            arguments:
+              combination_of_columns:
+                - team_id
+                - gameweek_id
+      columns:
+        - name: team_gameweek_key
+          description: Primary key generated from team_id and gameweek_id
+          tests:
+            - not_null
+            - unique
+
+        - name: team_id
+          description: Team identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_teams')
+                  field: team_id
+
+        - name: gameweek_id
+          description: Gameweek identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_gameweeks')
+                  field: gameweek_id
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 38
+
+        - name: three_week_team_roll_avg_goals_scored
+          description: Three week rolling average of goals scored by the team
+
+        - name: three_week_team_roll_avg_expected_goals
+          description: Three week rolling average of expected goals (xG) for the team
+
+        - name: three_week_team_roll_avg_opponent_score
+          description: Three week rolling average of goals conceded (opponent score) by the team
+
+        - name: three_week_team_roll_avg_expected_goals_conceded
+          description: Three week rolling average of expected goals conceded (xGC) by the team
+
+        - name: three_week_team_roll_avg_clean_sheets
+          description: Three week rolling average clean sheet percentage (0-1 scale) for the team
+
+        - name: three_week_team_roll_avg_wins
+          description: Three week rolling average win percentage (0-1 scale) for the team
