@@ -9,7 +9,7 @@ WITH source AS (
     FROM {{ source('fpl_raw', 'gameweeks') }}
 ),
 
-cleaned AS (
+final AS (
     SELECT 
         GAMEWEEK_ID                         AS gameweek_id,
         IS_CURRENT                          AS is_current,
@@ -29,4 +29,4 @@ cleaned AS (
 )
 
 SELECT * 
-FROM cleaned
+FROM final

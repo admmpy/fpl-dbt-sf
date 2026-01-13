@@ -9,7 +9,7 @@ WITH sourced AS (
     FROM {{ source('fpl_raw', 'fixtures') }}
 ),
 
-cleaned AS (
+final AS (
     SELECT
         FIXTURE_ID      AS fixture_id,
         GAMEWEEK_ID     AS gameweek_id,
@@ -24,4 +24,4 @@ cleaned AS (
 )
 
 SELECT *
-FROM cleaned
+FROM final

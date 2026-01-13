@@ -9,7 +9,7 @@ WITH source AS (
     FROM {{ source('fpl_raw', 'teams') }}
 ),
 
-cleaned AS (
+final AS (
     SELECT 
         TEAM_ID                 AS team_id,
         NAME                    AS team_name,
@@ -30,4 +30,4 @@ cleaned AS (
 )
 
 SELECT * 
-FROM cleaned
+FROM final

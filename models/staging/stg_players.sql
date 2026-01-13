@@ -10,7 +10,7 @@ WITH source AS (
 
 ),
 
-cleaned AS (
+final AS (
     SELECT
         PLAYER_ID                                       AS player_id,
         POSITION_ID                                     AS position_id,
@@ -53,4 +53,4 @@ cleaned AS (
 )
 
 SELECT * 
-FROM cleaned
+FROM final
