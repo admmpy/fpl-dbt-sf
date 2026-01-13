@@ -21,12 +21,20 @@ models:
           description: Home team identifier
           tests:
             - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_teams')
+                  field: team_id
         - name: away_team_name
           description: Away team name
         - name: away_team_id
           description: Away team identifier
           tests:
             - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_teams')
+                  field: team_id
         - name: home_team_score
           description: Home team score
         - name: away_team_score
