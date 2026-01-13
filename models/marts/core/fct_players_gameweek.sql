@@ -91,7 +91,8 @@ final AS (
         ict_index,
         value,
         opponent_defence_strength,
-        team_attack_strength
+        team_attack_strength,
+        CURRENT_TIMESTAMP() AS updated_at
 
 
     FROM team_context                            AS tc
