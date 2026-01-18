@@ -50,6 +50,10 @@ final AS (
         INGESTION_TIMESTAMP                             AS ingestion_at
 
     FROM source
+    QUALIFY ROW_NUMBER() OVER (
+        PARTITION BY player_id
+        ORDER BY ingestion_at DESC
+    ) = 1
 )
 
 SELECT * 

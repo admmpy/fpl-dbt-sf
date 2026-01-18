@@ -1,0 +1,46 @@
+version: 2 
+
+models: 
+    - name: stg_players_gameweek_snapshot
+      description: snapshot of player statistics providing historical details (ML)
+      tests:
+        - dbt_utils.unique_combination_of_columns:
+            arguments:
+              combination_of_columns:
+                - player_id
+                - gameweek_id 
+      
+      columns:
+        - name: player_id
+          description: Unique identifier for the player
+          tests:
+            - not_null
+        - name: gameweek_id
+          description: Gameweek identifier for the player history
+          tests:
+            - not_null
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 38
+            - relationships:
+                arguments:
+                  to: ref('stg_gameweeks')
+                  field: gameweek_id
+        - name: form
+          description: Recent form of the player
+          tests:
+            - not_null
+        - name: status
+          description: Player's current status (a=available, u=unavailable, s=suspended, i=injured, d=doubtful, n=not playing)
+          tests:
+            - not_null
+        - name: now_cost
+          description: Current cost of the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: ingestion_at
+          description: Timestamp when the data was ingested

@@ -12,7 +12,10 @@ WITH performance AS (
         ph.player_id,
         ph.gameweek_id,
         ph.fixture_id,
-        pl.team_id,
+        CASE
+            WHEN ph.was_home THEN fx.home_team_id
+            ELSE fx.away_team_id
+        END                                             AS team_id,
         ph.opponent_team_id,
         ph.total_points,
         ph.was_home,
@@ -36,6 +39,8 @@ WITH performance AS (
         ph.value
 
     FROM {{ ref('stg_player_history') }}     AS ph
+         INNER JOIN {{ ref('stg_fixtures') }} AS fx ON ph.fixture_id = fx.fixture_id
+                                                     AND ph.gameweek_id = fx.gameweek_id
          INNER JOIN {{ ref('dim_players') }} AS pl ON ph.player_id = pl.player_id
 ),
 

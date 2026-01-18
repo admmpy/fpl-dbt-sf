@@ -24,14 +24,26 @@ models:
         description: Player identifier
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_players')
+                field: player_id
       - name: gameweek_id
         description: Gameweek identifier
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_gameweeks')
+                field: gameweek_id
       - name: fixture_id
         description: Fixture identifier
         tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_fixtures')
+                field: fixture_id
       - name: team_id
         description: Team identifier
         tests:

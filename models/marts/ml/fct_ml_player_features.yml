@@ -37,6 +37,24 @@ models:
           tests:
             - not_null
 
+        - name: team_id
+          description: Identifier for the player's team
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_teams')
+                  field: team_id
+
+        - name: opponent_team_id
+          description: Identifier for the opponent team
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_teams')
+                  field: team_id
+
         - name: total_points
           description: Total points scored in the gameweek
           tests:
@@ -128,16 +146,6 @@ models:
           tests:
             - not_null
 
-        - name: value
-          description: Player value in the gameweek
-          tests:
-            - not_null
-
-        - name: team_id
-          description: Identifier for the player's team
-          tests:
-            - not_null
-
         - name: opponent_defence_strength
           description: Defense strength of the opponent team
           tests:
@@ -147,6 +155,18 @@ models:
           description: Attack strength of player team
           tests:
             - not_null
+
+        - name: form
+          description: Recent form of the player at the time of the snapshot
+
+        - name: status
+          description: Player's current status (a=available, u=unavailable, s=suspended, i=injured, d=doubtful, n=not playing) at the time of the snapshot
+
+        - name: now_cost
+          description: The cost of the player at the time of the snapshot
+
+        - name: ingestion_at
+          description: Timestamp when the data was ingested for the snapshot
 
         - name: three_week_players_roll_avg_points
           description: Three week players rolling average points
@@ -161,15 +181,6 @@ models:
                 arguments:
                   min_value: 0
                   max_value: 38
-
-        - name: opponent_team_id
-          description: Identifier for the opponent team
-          tests:
-            - not_null
-            - relationships:
-                arguments:
-                  to: ref('dim_teams')
-                  field: team_id
 
         - name: team_roll_avg_goals_scored
           description: Three week rolling average of goals scored by the player's team
