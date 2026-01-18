@@ -5,6 +5,13 @@ team form context for ML model predictions. Window functions exclude the current
 to prevent data leakage.
 */
 
+{{
+    config(
+        materialized='table',
+        tags=['intermediate']
+    )
+}}
+
 WITH base_data AS (
     SELECT
         team_id,

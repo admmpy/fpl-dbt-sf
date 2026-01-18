@@ -6,6 +6,13 @@ Aggregations are performed at the (team_id, fixture_id, gameweek_id) level to en
 facilitating comprehensive performance reporting and advanced modeling.
 */
 
+{{
+    config(
+        materialized='table',
+        tags=['core', 'marts']
+    )
+}}
+
 WITH player_history AS (
     SELECT *
     FROM {{ ref('stg_player_history') }}

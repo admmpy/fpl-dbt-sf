@@ -4,6 +4,13 @@ It extracts match fixture details including gameweek, kickoff time, teams, and s
 The data is cast to appropriate data types for analysis and joined with other models.
 */
 
+{{
+    config(
+        materialized='view',
+        tags=['staging']
+    )
+}}
+
 WITH sourced AS (
     SELECT *
     FROM {{ source('fpl_raw', 'fixtures') }}

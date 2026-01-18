@@ -4,6 +4,12 @@ It extracts player performance metrics for each fixture, including points scored
 goals, assists, and other key statistics. The data is flattened from JSON format
 and cast to appropriate data types for analysis. */
 
+{{
+    config(
+        materialized='view',
+        tags=['staging']
+    )
+}}
 
 WITH source AS (
     SELECT * 

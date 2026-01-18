@@ -4,6 +4,13 @@ It extracts gameweek metadata including deadlines, completion status, and aggreg
 This provides context for when gameweeks occur and their overall performance metrics.
 */
 
+{{
+    config(
+        materialized='view',
+        tags=['staging']
+    )
+}}
+
 WITH source AS (
     SELECT * 
     FROM {{ source('fpl_raw', 'gameweeks') }}

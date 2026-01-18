@@ -4,6 +4,13 @@ including team details, current standings, and strength metrics
 for both home and away performance.
 */
 
+{{
+    config(
+        materialized='table',
+        tags=['core', 'marts']
+    )
+}}
+
 WITH teams AS (
     SELECT
         team_id,

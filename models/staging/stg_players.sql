@@ -4,6 +4,13 @@ It extracts player attributes including position, team, cost, and cumulative sea
 This represents a snapshot of player data at the time of ingestion, not historical gameweek data.
 */
 
+{{
+    config(
+        materialized='view',
+        tags=['staging']
+    )
+}}
+
 WITH source AS (
     SELECT *
     FROM {{ source('fpl_raw', 'players') }}

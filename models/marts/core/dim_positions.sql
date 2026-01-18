@@ -4,6 +4,13 @@ It contains the four standard football positions: Goalkeeper, Defender, Midfield
 This is a static reference table for joining with player and performance data.
 */
 
+{{
+    config(
+        materialized='table',
+        tags=['core', 'marts']
+    )
+}}
+
 WITH positions AS (
     SELECT 1 AS position_id, 'Goalkeeper' AS position_name
     UNION ALL

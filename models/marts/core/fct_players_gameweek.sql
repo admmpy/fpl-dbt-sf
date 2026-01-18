@@ -6,6 +6,13 @@ of both the player's team and their opponents. The model joins multiple
 dimensions to enrich the performance data with team context and strength metrics.
 */
 
+{{
+    config(
+        materialized='table',
+        tags=['core', 'marts']
+    )
+}}
+
 WITH performance AS (
     SELECT
         pl.web_name,

@@ -5,7 +5,8 @@ It enriches the fixture details with home and away team names, providing a compl
 
 {{ 
     config(
-        materialized='table'
+        materialized='table',
+        tags=['core', 'marts']
     ) 
 }}
 

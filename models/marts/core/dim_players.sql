@@ -3,6 +3,13 @@ This model creates a player dimension table by joining player data with team inf
 It includes the latest player value from their most recent gameweek performance.
 */
 
+{{
+    config(
+        materialized='table',
+        tags=['core', 'marts']
+    )
+}}
+
 WITH players AS (
     SELECT 
         p.player_id,

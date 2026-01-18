@@ -5,6 +5,13 @@ metrics like form, status, and cost that are essential for ML model training.
 The model uses QUALIFY to ensure only the latest ingestion per player/gameweek is kept.
 */
 
+{{
+    config(
+        materialized='view',
+        tags=['staging']
+    )
+}}
+
 WITH source AS (
     SELECT *
     FROM {{ source('fpl_raw', 'players') }}

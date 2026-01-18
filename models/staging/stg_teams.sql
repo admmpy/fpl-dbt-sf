@@ -4,6 +4,13 @@ It extracts team information including name, points, position, and strength rati
 Strength ratings are provided for home/away attack and defense, useful for opponent analysis.
 */
 
+{{
+    config(
+        materialized='view',
+        tags=['staging']
+    )
+}}
+
 WITH source AS (
     SELECT * 
     FROM {{ source('fpl_raw', 'teams') }}

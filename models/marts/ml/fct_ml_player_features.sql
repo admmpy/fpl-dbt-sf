@@ -4,6 +4,13 @@ It combines player performance metrics with player and team rolling statistics, 
 position context into a single table optimized for ML pipelines.
 */
 
+{{
+    config(
+        materialized='table',
+        tags=['ml', 'marts']
+    )
+}}
+
 WITH player_base AS (
     SELECT *
     FROM {{ ref('fct_players_gameweek') }}

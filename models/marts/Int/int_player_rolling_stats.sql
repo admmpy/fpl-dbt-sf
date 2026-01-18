@@ -4,6 +4,13 @@ It computes 3-week and 5-week rolling averages of points scored, along with a to
 played counter. Window functions exclude the current gameweek to prevent data leakage.
 */
 
+{{
+    config(
+        materialized='table',
+        tags=['intermediate']
+    )
+}}
+
 WITH base_data AS (
     SELECT
         fct.player_id,
