@@ -8,8 +8,11 @@ dimensions to enrich the performance data with team context and strength metrics
 
 {{
     config(
-        materialized='table',
-        tags=['core', 'marts']
+        materialized='incremental',
+        tags=['core', 'marts'],
+        incremental_strategy='merge',
+        unique_key='player_gameweek_key',
+        on_schema_change='append_new_columns'
     )
 }}
 
@@ -49,6 +52,12 @@ WITH performance AS (
          INNER JOIN {{ ref('stg_fixtures') }} AS fx ON ph.fixture_id = fx.fixture_id
                                                      AND ph.gameweek_id = fx.gameweek_id
          INNER JOIN {{ ref('dim_players') }} AS pl ON ph.player_id = pl.player_id
+    {% if is_incremental() %}
+    WHERE ph.ingestion_at >= (
+            SELECT DATEADD(DAY, -7, MAX(ingestion_at)) 
+            FROM {{ this }}
+    )
+    {% endif %}
 ),
 
 opponent_strength AS (
