@@ -9,6 +9,10 @@ models:
           tests:
           - not_null
           - unique
+          - dbt_utils.accepted_range:
+              arguments:
+                min_value: 1
+                max_value: 38
         - name: is_current
           description: Whether the gameweek is the current gameweek
           tests:

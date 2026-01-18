@@ -13,6 +13,10 @@ models:
           description: Unique identifier for the player's position
           tests:
             - not_null
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 4
         - name: team_id
           description: Identifier for the player's team
           tests:
@@ -21,7 +25,6 @@ models:
                 arguments:
                   to: ref('stg_teams')
                   field: team_id
-        
         - name: first_name
           description: Player's first name
           tests:
@@ -34,7 +37,6 @@ models:
           description: Player's web name (display name on FPL website)
           tests:
             - not_null
-
         - name: now_cost
           description: Current cost of the player
           tests:
@@ -86,7 +88,12 @@ models:
           description: Player's current status (a=available, u=unavailable, s=suspended, i=injured, d=doubtful, n=not playing)
           tests:
             - not_null
-        - name: gameweek_fetched
+        - name: current_gameweek
           description: Gameweek when the data was fetched
+          tests:
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 38
         - name: ingestion_at
           description: Timestamp when the data was ingested

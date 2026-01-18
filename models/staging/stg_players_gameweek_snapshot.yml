@@ -19,6 +19,10 @@ models:
           description: Gameweek identifier for the player history
           tests:
             - not_null
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 38
             - relationships:
                 arguments:
                   to: ref('stg_gameweeks')
