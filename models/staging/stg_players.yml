@@ -88,5 +88,5 @@ models:
             - not_null
         - name: gameweek_fetched
           description: Gameweek when the data was fetched
-        - name: ingestion_timestamp
+        - name: ingestion_at
           description: Timestamp when the data was ingested
