@@ -1,0 +1,145 @@
+version: 2
+
+models:
+    - name: rprt_squad_performance_comparison
+      description: Denormalized view of the current week's recommended squad
+      tests:
+        - dbt_utils.unique_combination_of_columns:
+            arguments:
+              combination_of_columns:
+                - recommended_at
+                - gameweek_id
+                - player_id
+                
+      columns:
+        - name: recommended_at
+          description: Timestamp when the recommendation was generated
+          tests:
+            - not_null
+        - name: gameweek_id
+          description: Gameweek identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_gameweeks')
+                  field: gameweek_id
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 38
+        - name: player_id
+          description: Player identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_players')
+                  field: player_id
+        - name: web_name
+          description: Player web name
+          tests:
+            - not_null
+        - name: first_name
+          description: Player first name
+          tests:
+            - not_null
+        - name: second_name
+          description: Player second name
+          tests:
+            - not_null
+        - name: position_id
+          description: Position identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_positions')
+                  field: position_id
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 4
+        - name: position_name
+          description: Position name
+          tests:
+            - not_null
+        - name: team_id
+          description: Team identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_teams')
+                  field: team_id
+        - name: team_name
+          description: Team name
+          tests:
+            - not_null
+        - name: team_short_name
+          description: Team short name
+          tests:
+            - not_null
+        - name: now_cost
+          description: Current cost of the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: predicted_points
+          description: Points predicted by the model
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: actual_points
+          description: Points scored by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: absolute_error
+          description: Absolute error between predicted and actual points
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: error_bias
+          description: Error bias between predicted and actual points
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: is_in_squad
+          description: Boolean flag for recommended in squad
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_starter
+          description: Boolean flag for recommended starting XI
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_captain
+          description: Boolean flag for recommended captain
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_vice_captain
+          description: Boolean flag for recommended vice-captain
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]

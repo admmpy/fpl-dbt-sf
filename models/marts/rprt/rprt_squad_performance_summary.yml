@@ -1,0 +1,68 @@
+version: 2
+
+models:
+    - name: rprt_squad_performance_summary
+      description: Aggregated metrics from fct_model_analysis
+      tests:
+        - dbt_utils.unique_combination_of_columns:
+            arguments:
+              combination_of_columns:
+                - recommended_at
+                - gameweek_id
+
+      columns:
+        - name: recommended_at
+          description: Timestamp when the recommendation was generated
+          tests:
+            - not_null
+        - name: gameweek_id
+          description: Gameweek identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_gameweeks')
+                  field: gameweek_id
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 38
+        - name: player_count
+          description: Number of players in the squad
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 0
+                  max_value: 15
+        - name: avg_predicted_points
+          description: Average predicted points by the squad
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: avg_actual_points
+          description: Average actual points by the squad
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: mean_absolute_error
+          description: Mean absolute error between predicted and actual points
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: mean_error_bias
+          description: Mean error bias between predicted and actual points
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
