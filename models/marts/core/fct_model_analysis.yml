@@ -1,0 +1,202 @@
+version: 2
+
+models:
+    - name: fct_model_analysis
+      description: Model analysis table
+      tests:
+        - dbt_utils.unique_combination_of_columns:
+            arguments:
+              combination_of_columns:
+                - player_id
+                - recommended_at
+      columns:
+        - name: recommendation_key
+          description: Primary key (player_id + recommended_at)
+          tests:
+            - not_null
+            - unique
+        - name: recommended_at
+          description: Timestamp when the recommendation was generated
+          tests:
+            - not_null
+        - name: player_id
+          description: Player identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_players')
+                  field: player_id
+        - name: gameweek_id
+          description: Gameweek identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_gameweeks')
+                  field: gameweek_id
+        - name: position_id
+          description: Position identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_positions')
+                  field: position_id
+        - name: team_id
+          description: Team identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_teams')
+                  field: team_id
+        - name: now_cost
+          description: Current cost of the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: predicted_points
+          description: Points predicted by the model
+          tests:
+            - not_null
+        - name: actual_points
+          description: Points scored by the player
+          tests:
+            - not_null
+        - name: absolute_error
+          description: Absolute error between predicted and actual points
+          tests:
+            - not_null
+        - name: error_bias
+          description: Bias between predicted and actual points
+          tests:
+            - not_null
+        - name: is_in_squad
+          description: Boolean flag for recommended in squad
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_starter
+          description: Boolean flag for recommended starting XI
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_captain
+          description: Boolean flag for recommended captain
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_vice_captain
+          description: Boolean flag for recommended vice-captain
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: minutes_played
+          description: Minutes played by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: goals_scored
+          description: Goals scored by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: assists
+          description: Assists by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: clean_sheets
+          description: Clean sheets by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: goals_conceded
+          description: Goals conceded by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: yellow_cards
+          description: Yellow cards by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: red_cards
+          description: Red cards by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: saves
+          description: Saves by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: bonus
+          description: Bonus points by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: avg_influence
+          description: Average influence score by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: avg_creativity
+          description: Average creativity score by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: avg_threat
+          description: Average threat score by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: avg_ict_index
+          description: Average ICT index score by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: value
+          description: Value score by the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"

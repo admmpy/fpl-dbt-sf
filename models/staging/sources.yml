@@ -182,3 +182,43 @@ sources:
           freshness:
             warn_after: {count: 7, period: day}
             error_after: {count: 14, period: day}
+
+      - name: recommended_squad
+        description: |
+          Output from the ML/Optimisation pipeline. 
+          Contains squad recommendations and predicted points.
+        columns:
+          - name: RECOMMENDATION_KEY
+            description: Primary key (player_id + recommended_at)
+            tests:
+              - not_null
+              - unique
+          - name: RECOMMENDED_AT
+            description: Timestamp when the recommendation was generated
+          - name: PLAYER_ID
+            description: Player identifier
+          - name: POSITION_ID
+            description: Position identifier
+          - name: TEAM_ID
+            description: Team identifier
+          - name: NOW_COST
+            description: Current cost of the player
+          - name: GAMEWEEK_ID
+            description: Gameweek for which the recommendation is valid
+          - name: EXPECTED_POINTS_NEXT_GW
+            description: Points predicted by the model for the next gameweek
+          - name: EXPECTED_POINTS_5_GW
+            description: Points predicted by the model for the next 5 gameweeks
+          - name: IS_IN_SQUAD
+            description: Boolean flag for recommended in squad
+          - name: IS_STARTER
+            description: Boolean flag for recommended starting XI
+          - name: IS_CAPTAIN
+            description: Boolean flag for recommended captain
+          - name: IS_VICE_CAPTAIN
+            description: Boolean flag for recommended vice-captain
+        config:
+          freshness:
+            warn_after: {count: 3, period: day}
+            error_after: {count: 7, period: day}
+
