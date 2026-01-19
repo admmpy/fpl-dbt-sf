@@ -23,7 +23,7 @@ models:
             - not_null
             - relationships:
                 arguments:
-                  to: ref('stg_teams')
+                  to: ref('dim_teams')
                   field: team_id
         - name: first_name
           description: Player's first name

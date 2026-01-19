@@ -9,7 +9,8 @@ facilitating comprehensive performance reporting and advanced modeling.
 {{
     config(
         materialized='table',
-        tags=['core', 'marts']
+        tags=['core', 'marts'],
+        cluster_by=['gameweek_id', 'team_id']
     )
 }}
 

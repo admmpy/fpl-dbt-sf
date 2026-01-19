@@ -8,7 +8,8 @@ Optimized for model monitoring dashboards
 {{
     config(
         materialized='table',
-        tags=['reporting']
+        tags=['reporting'],
+        cluster_by=['gameweek_id', 'recommended_at']
     )
 }}
 

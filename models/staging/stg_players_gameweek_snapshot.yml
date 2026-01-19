@@ -15,6 +15,10 @@ models:
           description: Unique identifier for the player
           tests:
             - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_players')
+                  field: player_id
         - name: gameweek_id
           description: Gameweek identifier for the player history
           tests:

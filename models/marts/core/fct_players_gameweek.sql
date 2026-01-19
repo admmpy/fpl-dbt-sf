@@ -12,7 +12,8 @@ dimensions to enrich the performance data with team context and strength metrics
         tags=['core', 'marts'],
         incremental_strategy='merge',
         unique_key='player_gameweek_key',
-        on_schema_change='append_new_columns'
+        on_schema_change='append_new_columns',
+        cluster_by=['gameweek_id', 'player_id']
     )
 }}
 

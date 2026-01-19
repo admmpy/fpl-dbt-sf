@@ -15,7 +15,8 @@ KEY ARCHITECTURAL DECISIONS:
 {{
     config(
         materialized='table',
-        tags=['analysis']
+        tags=['analysis'],
+        cluster_by=['gameweek_id', 'player_id']
     )
 }}
 

@@ -8,7 +8,8 @@ Optimized for dashboard display
 {{
     config(
         materialized='table',
-        tags=['reporting']
+        tags=['reporting'],
+        cluster_by=['gameweek_id', 'player_id']
     )
 }}
 
