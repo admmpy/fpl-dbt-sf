@@ -106,7 +106,8 @@ teams AS (
 
 final AS (
     SELECT
-        {{ dbt_utils.generate_surrogate_key(['tf.team_id', 'tf.gameweek_id'])}} AS team_fixture_key,
+        -- Without this, multiple fixtures in same gameweek would cause duplicate key conflicts
+        {{ dbt_utils.generate_surrogate_key(['tf.team_id', 'tf.gameweek_id', 'tf.fixture_id'])}} AS team_fixture_key,
         tf.team_id,
         tf.gameweek_id,
         tf.fixture_id,

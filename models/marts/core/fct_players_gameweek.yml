@@ -2,17 +2,18 @@ version: 2
 
 models:
   - name: fct_players_gameweek
-    description: Fact table showing player performance by gameweek
+    description: Fact table showing player performance by gameweek and fixture
     tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:
             combination_of_columns:
               - player_id
               - gameweek_id
+              - fixture_id
 
     columns:
       - name: player_gameweek_key
-        description: Primary key generate from player_id and gameweek_id
+        description: Primary key generated from player_id, gameweek_id, and fixture_id to handle double gameweeks
         tests:
           - not_null
           - unique

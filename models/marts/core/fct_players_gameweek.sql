@@ -8,8 +8,11 @@ dimensions to enrich the performance data with team context and strength metrics
 
 {{
     config(
-        materialized='table',
-        tags=['core', 'marts']
+        materialized='incremental',
+        tags=['core', 'marts'],
+        incremental_strategy='merge',
+        unique_key='player_gameweek_key',
+        on_schema_change='append_new_columns'
     )
 }}
 
@@ -43,39 +46,57 @@ WITH performance AS (
         ph.creativity,
         ph.threat,
         ph.ict_index,
-        ph.value
+        ph.value,
+        ph.ingestion_at
 
-    FROM {{ ref('stg_player_history') }}     AS ph
+    FROM {{ ref('stg_player_history') }}      AS ph
          INNER JOIN {{ ref('stg_fixtures') }} AS fx ON ph.fixture_id = fx.fixture_id
-                                                     AND ph.gameweek_id = fx.gameweek_id
-         INNER JOIN {{ ref('dim_players') }} AS pl ON ph.player_id = pl.player_id
+                                                       AND ph.gameweek_id = fx.gameweek_id
+         INNER JOIN {{ ref('dim_players') }}  AS pl ON ph.player_id = pl.player_id
+    {% if is_incremental() %}
+    WHERE ph.ingestion_at >= (
+            SELECT DATEADD(DAY, -7, MAX(target.ingestion_at)) 
+            FROM {{ this }} AS target
+    )
+    {% endif %}
 ),
 
 opponent_strength AS (
     SELECT 
         pe.*,
-        CASE 
-            WHEN pe.was_home THEN tm.strength_defence_away
-            ELSE  tm.strength_defence_home
-        END                                                                       AS opponent_defence_strength
-        FROM performance                        AS pe
-             LEFT JOIN {{ ref('dim_teams') }}   AS tm ON pe.opponent_team_id = tm.team_id
+        -- This prevents NULL strength values which would break downstream analytics
+        COALESCE(
+            CASE 
+                WHEN pe.was_home THEN tm.strength_defence_away
+                ELSE  tm.strength_defence_home
+            END,
+            1000
+        )                                                                        AS opponent_defence_strength
+
+    FROM performance                        AS pe
+         LEFT JOIN {{ ref('dim_teams') }}   AS tm ON pe.opponent_team_id = tm.team_id
 ),
 
 team_context AS (
     SELECT 
         oc.*,
-        CASE 
-            WHEN oc.was_home THEN tm.strength_attack_home
-            ELSE tm.strength_attack_away
-        END                                                                       AS team_attack_strength
-    FROM opponent_strength              AS oc      
-    LEFT JOIN {{ ref('dim_teams') }}    AS tm ON oc.team_id = tm.team_id
+        -- This prevents NULL strength values which would break downstream analytics
+        COALESCE(
+            CASE 
+                WHEN oc.was_home THEN tm.strength_attack_home
+                ELSE tm.strength_attack_away
+            END,
+            1000
+        )                                                                         AS team_attack_strength
+
+    FROM opponent_strength                  AS oc      
+         LEFT JOIN {{ ref('dim_teams') }}   AS tm ON oc.team_id = tm.team_id
 ),
 
 final AS (
     SELECT
-        {{ dbt_utils.generate_surrogate_key(['tc.player_id', 'tc.gameweek_id']) }} AS player_gameweek_key,
+        -- Without this, multiple fixtures in same gameweek would cause duplicate key conflicts
+        {{ dbt_utils.generate_surrogate_key(['tc.player_id', 'tc.gameweek_id', 'tc.fixture_id']) }} AS player_gameweek_key,
         web_name,
         player_id,
         gameweek_id,
@@ -104,8 +125,8 @@ final AS (
         value,
         opponent_defence_strength,
         team_attack_strength,
-        CURRENT_TIMESTAMP() AS updated_at
-
+        ingestion_at,
+        CURRENT_TIMESTAMP()                                                          AS updated_at
 
     FROM team_context                            AS tc
 )
