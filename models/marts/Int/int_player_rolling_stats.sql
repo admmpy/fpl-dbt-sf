@@ -17,7 +17,8 @@ EXAMPLE:
 {{
     config(
         materialized='table',
-        tags=['intermediate']
+        tags=['intermediate'],
+        cluster_by=['gameweek_id', 'player_id']
     )
 }}
 
