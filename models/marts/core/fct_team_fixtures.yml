@@ -4,7 +4,7 @@ models:
   - name: fct_team_fixtures
     description: |
       Fact table containing team-level performance metrics for each fixture.
-      Grain: One row per team per gameweek (team_id x gameweek_id).
+      Grain: One row per team per fixture per gameweek (team_id x gameweek_id x fixture_id).
       
       This table aggregates player-level statistics to the team level and enriches
       with fixture context and team attributes. Includes both actual match results
@@ -15,10 +15,11 @@ models:
             combination_of_columns:
               - team_id
               - gameweek_id
+              - fixture_id
       
     columns:
       - name: team_fixture_key
-        description: Primary key generated from team_id and gameweek_id
+        description: Primary key generated from team_id, gameweek_id, and fixture_id to handle double gameweeks
         tests:
           - not_null
           - unique
