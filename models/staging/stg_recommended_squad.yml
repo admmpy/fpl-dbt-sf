@@ -1,0 +1,105 @@
+version: 2
+
+models:
+    - name: stg_recommended_squad
+      description: Recommended squad data from the ML/Optimization pipeline
+      tests:
+        - dbt_utils.unique_combination_of_columns:
+            arguments:
+              combination_of_columns:
+                - player_id
+                - recommended_at
+                
+      columns:
+        - name: recommendation_key
+          description: Primary key (player_id + recommended_at)
+          tests:
+            - not_null
+            - unique
+        - name: recommended_at
+          description: Timestamp when the recommendation was generated
+          tests:
+            - not_null
+        - name: player_id
+          description: Player identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_players')
+                  field: player_id
+        - name: position_id
+          description: Position identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_positions')
+                  field: position_id
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 4
+        - name: team_id
+          description: Team identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_teams')
+                  field: team_id
+        - name: now_cost
+          description: Current cost of the player
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+        - name: gameweek_id
+          description: Gameweek for which the recommendation is valid
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_gameweeks')
+                  field: gameweek_id
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 38
+        - name: expected_points_next_gw
+          description: Points predicted by the model for the next gameweek
+          tests:
+            - not_null
+        - name: expected_points_5_gw
+          description: Points predicted by the model for the next 5 gameweeks
+          tests:
+            - not_null
+        - name: is_in_squad
+          description: Boolean flag for recommended in squad
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_starter
+          description: Boolean flag for recommended starting XI
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_captain
+          description: Boolean flag for recommended captain
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_vice_captain
+          description: Boolean flag for recommended vice-captain
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
