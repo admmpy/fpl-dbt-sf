@@ -7,7 +7,8 @@ position context into a single table optimized for ML pipelines.
 {{
     config(
         materialized='table',
-        tags=['ml', 'marts']
+        tags=['ml', 'marts'],
+        cluster_by=['gameweek_id', 'player_id']
     )
 }}
 
