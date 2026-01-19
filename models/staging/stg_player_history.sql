@@ -63,7 +63,7 @@ deduped AS (
     SELECT *
     FROM flattened
     QUALIFY ROW_NUMBER() OVER (
-        PARTITION BY player_id, gameweek_id ORDER BY ingestion_at DESC
+        PARTITION BY player_id, gameweek_id, fixture_id ORDER BY ingestion_at DESC
     ) = 1
 ),
 
