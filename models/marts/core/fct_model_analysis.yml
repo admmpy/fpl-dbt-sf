@@ -25,7 +25,7 @@ models:
             - not_null
             - relationships:
                 arguments:
-                  to: ref('stg_players')
+                  to: ref('dim_players')
                   field: player_id
         - name: gameweek_id
           description: Gameweek identifier
@@ -41,7 +41,7 @@ models:
             - not_null
             - relationships:
                 arguments:
-                  to: ref('stg_positions')
+                  to: ref('dim_positions')
                   field: position_id
         - name: team_id
           description: Team identifier
@@ -49,7 +49,7 @@ models:
             - not_null
             - relationships:
                 arguments:
-                  to: ref('stg_teams')
+                  to: ref('dim_teams')
                   field: team_id
         - name: now_cost
           description: Current cost of the player
