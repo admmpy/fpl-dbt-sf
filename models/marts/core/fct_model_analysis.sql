@@ -64,7 +64,7 @@ actual_performance AS (
         SUM(yellow_cards)           AS yellow_cards,
         SUM(red_cards)              AS red_cards,
         SUM(saves)                  AS saves,
-        MAX(bonus)                  AS bonus,
+        SUM(bonus)                  AS bonus,
         AVG(influence)              AS avg_influence,
         AVG(creativity)             AS avg_creativity,
         AVG(threat)                 AS avg_threat,
@@ -108,7 +108,7 @@ final AS (
         ap.value
 
     FROM final_predictions             AS fp
-         INNER JOIN actual_performance AS ap ON fp.player_id = ap.player_id
+         LEFT JOIN actual_performance  AS ap ON fp.player_id = ap.player_id
                                                 AND fp.gameweek_id = ap.gameweek_id
 )
 
