@@ -12,8 +12,8 @@ semantic_models:
       - name: short_name
         type: categorical
       - name: team_strength
-        type: numeric
+        type: categorical
       - name: strength_overall_home
-        type: numeric
+        type: categorical
       - name: strength_overall_away
-        type: numeric
+        type: categorical
