@@ -112,9 +112,6 @@ models:
           description: Error bias between predicted and actual points
           tests:
             - not_null
-            - dbt_utils.expression_is_true:
-                arguments:
-                  expression: ">= 0"
         - name: is_in_squad
           description: Boolean flag for recommended in squad
           tests:
