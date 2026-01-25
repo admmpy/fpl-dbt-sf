@@ -1,0 +1,103 @@
+semantic_models:
+  - name: player_performance
+    description: Player performance metrics by gameweek.
+    model: ref('fct_players_gameweek')
+    defaults:
+      agg_time_dimension: ingestion_at
+    entities:
+      - name: player_fixture
+        type: primary
+        expr: player_gameweek_key
+      - name: player
+        type: foreign
+        expr: player_id
+      - name: team
+        type: foreign
+        expr: team_id
+      - name: gameweek
+        type: foreign
+        expr: gameweek_id
+      - name: fixture
+        type: foreign
+        expr: fixture_id
+    measures:
+      - name: points_sum
+        description: Sum of total points
+        expr: total_points
+        agg: sum
+      - name: goals_sum
+        description: Sum of goals scored
+        expr: goals_scored
+        agg: sum
+      - name: assists_sum
+        description: Sum of assists
+        expr: assists
+        agg: sum
+      - name: minutes_sum
+        description: Sum of minutes played
+        expr: minutes_played
+        agg: sum
+      - name: xg_sum
+        description: Sum of expected goals
+        expr: expected_goals
+        agg: sum
+      - name: gameweeks_count
+        description: Count of gameweeks played
+        expr: gameweek_id
+        agg: count_distinct
+    dimensions:
+      - name: was_home
+        type: categorical
+      - name: ingestion_at
+        type: time
+        type_params:
+          time_granularity: day
+
+metrics:
+  - name: total_points
+    description: Total fantasy points scored.
+    type: simple
+    label: Total Points
+    type_params:
+      measure: points_sum
+
+  - name: total_goals
+    description: Total goals scored.
+    type: simple
+    label: Total Goals
+    type_params:
+      measure: goals_sum
+
+  - name: total_minutes
+    description: Total minutes played.
+    type: simple
+    label: Total Minutes
+    type_params:
+      measure: minutes_sum
+
+  - name: gameweeks_played
+    description: Number of distinct gameweeks played.
+    type: simple
+    label: Gameweeks Played
+    type_params:
+      measure: gameweeks_count
+
+  - name: points_per_gameweek
+    description: Average points per gameweek played.
+    type: ratio
+    label: Points per Gameweek
+    type_params:
+      numerator: total_points
+      denominator: gameweeks_played
+    filter: |
+      {{ Dimension('player_performance__gameweeks_count') }} > 0
+
+  - name: goals_per_90
+    description: Goals scored per 90 minutes.
+    type: ratio
+    label: Goals per 90
+    type_params:
+      numerator: total_goals
+      denominator: total_minutes
+    filter: |
+      {{ Dimension('player_performance__minutes_sum') }} > 0
