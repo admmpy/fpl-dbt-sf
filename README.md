@@ -25,5 +25,6 @@ My approach for this projects differs with an ELT approach (previous was ETL) al
 
 # Next steps
 
-- Connecting to a BI tool
-- Implementing cloud scheduler for pipeline
+- Creating Dashboards in Looker Studios
+- Implementing AI Agent using LangChain
+- Implementing Cloud Scheduler for pipeline
