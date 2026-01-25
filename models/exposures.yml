@@ -1,0 +1,17 @@
+version: 2
+
+exposures:
+  - name: looker_studio_fpl_dashboard
+    type: dashboard
+    maturity: medium
+    owner:
+      name: FPL Analytics
+    description: >
+      Google Looker Studio dashboard used for FPL reporting and analysis.
+      This exposure tracks downstream BI usage of core, ML, and reporting models.
+    depends_on:
+      - ref('dim_players')
+      - ref('dim_teams')
+      - ref('fct_players_gameweek')
+      - ref('fct_ml_player_features')
+      - ref('rprt_squad_performance_comparison')
