@@ -1,0 +1,23 @@
+semantic_models:
+  - name: players
+    description: Player dimension showing player details.
+    model: ref('dim_players')
+    entities:
+      - name: player
+        type: primary
+        expr: player_id
+      - name: team
+        type: foreign
+        expr: team_id
+      - name: position
+        type: foreign
+        expr: position_id
+    dimensions:
+      - name: web_name
+        type: categorical
+      - name: first_name
+        type: categorical
+      - name: second_name
+        type: categorical
+      - name: current_value
+        type: categorical
