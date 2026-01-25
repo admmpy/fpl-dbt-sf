@@ -1,0 +1,19 @@
+semantic_models:
+  - name: teams
+    description: Team dimension showing team details and strength.
+    model: ref('dim_teams')
+    entities:
+      - name: team
+        type: primary
+        expr: team_id
+    dimensions:
+      - name: team_name
+        type: categorical
+      - name: short_name
+        type: categorical
+      - name: team_strength
+        type: numeric
+      - name: strength_overall_home
+        type: numeric
+      - name: strength_overall_away
+        type: numeric
