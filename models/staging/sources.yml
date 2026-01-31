@@ -125,6 +125,72 @@ sources:
           freshness:
             warn_after: {count: 1, period: day}
             error_after: {count: 3, period: day}
+
+      - name: players_gameweek_snapshot
+        description: |
+          Append-only historical snapshots of player attributes per gameweek.
+          Used for tracking point-in-time metrics like form, status, and cost.
+          One row per player per gameweek per ingestion.
+        columns:
+          - name: SNAPSHOT_ID
+            description: Auto-increment primary key for the snapshot
+            tests:
+              - not_null
+              - unique
+          - name: PLAYER_ID
+            description: Player identifier
+            tests:
+              - not_null
+          - name: GAMEWEEK_FETCHED
+            description: Gameweek when the snapshot was captured
+            tests:
+              - not_null
+          - name: WEB_NAME
+            description: Player's web name (display name on FPL website)
+          - name: FIRST_NAME
+            description: Player's first name
+          - name: SECOND_NAME
+            description: Player's second name
+          - name: TEAM_ID
+            description: Player's team identifier
+          - name: POSITION_ID
+            description: Player's position identifier
+          - name: NOW_COST
+            description: Player cost at time of snapshot
+          - name: SELECTED_BY_PERCENT
+            description: Selection percentage at time of snapshot
+          - name: FORM
+            description: Form rating at time of snapshot
+          - name: VALUE_SEASON
+            description: Value season metric at time of snapshot
+          - name: VALUE_FORM
+            description: Value form metric at time of snapshot
+          - name: TOTAL_POINTS
+            description: Total points at time of snapshot
+          - name: MINUTES
+            description: Total minutes at time of snapshot
+          - name: GOALS_SCORED
+            description: Goals scored at time of snapshot
+          - name: ASSISTS
+            description: Assists at time of snapshot
+          - name: CLEAN_SHEETS
+            description: Clean sheets at time of snapshot
+          - name: GOALS_CONCEDED
+            description: Goals conceded at time of snapshot
+          - name: BONUS
+            description: Bonus points at time of snapshot
+          - name: BPS
+            description: Bonus point system score at time of snapshot
+          - name: STATUS
+            description: Player status at time of snapshot
+          - name: CHANCE_OF_PLAYING_NEXT_ROUND
+            description: Availability odds at time of snapshot
+          - name: INGESTION_TIMESTAMP
+            description: Timestamp when the snapshot was ingested
+        config:
+          freshness:
+            warn_after: {count: 1, period: day}
+            error_after: {count: 3, period: day}
   
       - name: teams
         description: Team information and fixtures
@@ -180,8 +246,8 @@ sources:
             description: Name of the API endpoint
         config:
           freshness:
-            warn_after: {count: 7, period: day}
-            error_after: {count: 14, period: day}
+            warn_after: {count: 3, period: day}
+            error_after: {count: 7, period: day}
 
       - name: recommended_squad
         description: |
