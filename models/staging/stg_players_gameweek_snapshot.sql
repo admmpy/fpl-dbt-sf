@@ -1,6 +1,6 @@
 /*
 This model creates a historical snapshot of player attributes for each gameweek.
-By leveraging the append-only nature of the raw players table, it preserves point-in-time
+By leveraging the append-only players_gameweek_snapshot table, it preserves point-in-time
 metrics like form, status, and cost that are essential for ML model training.
 The model uses QUALIFY to ensure only the latest ingestion per player/gameweek is kept.
 */
@@ -14,12 +14,12 @@ The model uses QUALIFY to ensure only the latest ingestion per player/gameweek i
 
 WITH source AS (
     SELECT *
-    FROM {{ source('fpl_raw', 'players') }}
-
+    FROM {{ source('fpl_raw', 'players_gameweek_snapshot') }}
 ),
 
 renamed AS (
     SELECT
+        SNAPSHOT_ID                                     AS snapshot_id,
         PLAYER_ID                                       AS player_id,
         GAMEWEEK_FETCHED                                AS gameweek_id,
         FORM                                            AS form,
@@ -45,11 +45,17 @@ renamed AS (
 ),
 
 final AS (
-    SELECT *
+    SELECT
+        player_id,
+        gameweek_id,
+        form,
+        status,
+        now_cost,
+        ingestion_at
+    
     FROM renamed
     QUALIFY ROW_NUMBER() OVER (PARTITION BY player_id, gameweek_id ORDER BY ingestion_at DESC) = 1
 )
 
 SELECT * 
 FROM final
-order by gameweek_id
