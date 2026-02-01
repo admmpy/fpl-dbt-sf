@@ -27,4 +27,4 @@ My approach for this projects differs with an ELT approach (previous was ETL) al
 
 - Creating Dashboards in Looker Studios
 - Implementing AI Agent using LangChain
-- Implementing Cloud Scheduler for pipeline
+- ~~Implementing Cloud Scheduler for pipeline~~
