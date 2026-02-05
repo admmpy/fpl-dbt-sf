@@ -66,12 +66,16 @@ final AS (
         bs.is_in_squad,
         bs.is_starter,
         bs.is_captain,
-        bs.is_vice_captain
+        bs.is_vice_captain,
+        bs.is_finished,
+        bs.is_current,
+        bs.is_next,
+        bs.is_previous,
 
     FROM base                AS bs
          LEFT JOIN players   AS pl ON bs.player_id = pl.player_id
          LEFT JOIN teams     AS tm ON bs.team_id = tm.team_id
-         LEFT JOIN positions AS ps ON bs.position_id = ps.position_id
+         LEFT JOIN positions AS ps ON bs.position_id = ps.position_id      
 )
 
 SELECT *

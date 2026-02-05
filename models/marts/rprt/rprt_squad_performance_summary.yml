@@ -48,19 +48,25 @@ models:
         - name: avg_actual_points
           description: Average actual points by the squad
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: mean_absolute_error
           description: Mean absolute error between predicted and actual points
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: mean_error_bias
           description: Mean error bias between predicted and actual points
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             
