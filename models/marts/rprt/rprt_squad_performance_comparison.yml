@@ -97,21 +97,27 @@ models:
         - name: actual_points
           description: Points scored by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: absolute_error
           description: Absolute error between predicted and actual points
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: error_bias
           description: Error bias between predicted and actual points
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
         - name: is_in_squad
           description: Boolean flag for recommended in squad
           tests:

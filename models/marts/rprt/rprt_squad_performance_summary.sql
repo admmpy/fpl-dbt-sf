@@ -22,6 +22,7 @@ final AS (
     SELECT
         recommended_at,
         gameweek_id,
+        is_finished,
         COUNT(*)                           AS player_count,
         AVG(predicted_points)              AS avg_predicted_points,
         AVG(actual_points)                 AS avg_actual_points,
@@ -29,7 +30,7 @@ final AS (
         AVG(error_bias)                    AS mean_error_bias
 
     FROM base
-    GROUP BY 1, 2
+    GROUP BY 1, 2, 3
 )
 
 SELECT *

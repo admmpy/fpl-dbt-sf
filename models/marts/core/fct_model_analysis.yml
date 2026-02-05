@@ -19,6 +19,34 @@ models:
           description: Timestamp when the recommendation was generated
           tests:
             - not_null
+        - name: is_finished
+          description: Whether the gameweek has finished
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_current
+          description: Whether the gameweek is the current gameweek
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_next
+          description: Whether the gameweek is the next gameweek
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_previous
+          description: Whether the gameweek is the previous gameweek
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
         - name: player_id
           description: Player identifier
           tests:
@@ -65,15 +93,21 @@ models:
         - name: actual_points
           description: Points scored by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
         - name: absolute_error
           description: Absolute error between predicted and actual points
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
         - name: error_bias
           description: Bias between predicted and actual points
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
         - name: is_in_squad
           description: Boolean flag for recommended in squad
           tests:
@@ -105,98 +139,126 @@ models:
         - name: minutes_played
           description: Minutes played by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: goals_scored
           description: Goals scored by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: assists
           description: Assists by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: clean_sheets
           description: Clean sheets by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: goals_conceded
           description: Goals conceded by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: yellow_cards
           description: Yellow cards by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: red_cards
           description: Red cards by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: saves
           description: Saves by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: bonus
           description: Bonus points by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: avg_influence
           description: Average influence score by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: avg_creativity
           description: Average creativity score by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: avg_threat
           description: Average threat score by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: avg_ict_index
           description: Average ICT index score by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"
         - name: value
           description: Value score by the player
           tests:
-            - not_null
+            - not_null:
+                config:
+                  where: 'is_finished = TRUE'
             - dbt_utils.expression_is_true:
                 arguments:
                   expression: ">= 0"

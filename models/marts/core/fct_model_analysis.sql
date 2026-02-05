@@ -79,6 +79,10 @@ final AS (
     SELECT
         fp.recommendation_key,
         fp.recommended_at,
+        gw.is_finished,
+        gw.is_current,
+        gw.is_next,
+        gw.is_previous,
         fp.player_id,
         fp.gameweek_id,
         fp.position_id,
@@ -110,6 +114,7 @@ final AS (
     FROM final_predictions             AS fp
          LEFT JOIN actual_performance  AS ap ON fp.player_id = ap.player_id
                                                 AND fp.gameweek_id = ap.gameweek_id
+         LEFT JOIN {{ ref('stg_gameweeks') }} AS gw ON fp.gameweek_id = gw.gameweek_id
 )
 
 SELECT *
