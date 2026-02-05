@@ -66,12 +66,14 @@ final AS (
         bs.is_in_squad,
         bs.is_starter,
         bs.is_captain,
-        bs.is_vice_captain
+        bs.is_vice_captain,
+        CASE WHEN bs.gameweek_id = MAX(bs.gameweek_id) OVER () THEN 1 ELSE 0 END AS is_current_week,
+        CASE WHEN bs.gameweek_id = MAX(bs.gameweek_id) OVER () - 1 THEN 1 ELSE 0 END AS is_previous_week
 
     FROM base                AS bs
          LEFT JOIN players   AS pl ON bs.player_id = pl.player_id
          LEFT JOIN teams     AS tm ON bs.team_id = tm.team_id
-         LEFT JOIN positions AS ps ON bs.position_id = ps.position_id
+         LEFT JOIN positions AS ps ON bs.position_id = ps.position_id      
 )
 
 SELECT *
