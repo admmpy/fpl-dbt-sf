@@ -146,3 +146,38 @@ models:
             - accepted_values:
                 arguments:
                   values: [true, false]
+        - name: is_finished
+          description: Boolean flag for finished gameweek
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_current
+          description: Boolean flag for current gameweek
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_next
+          description: Boolean flag for next gameweek
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_previous
+          description: Boolean flag for previous gameweek
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]
+        - name: is_latest_version
+          description: Boolean flag for latest version
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [true, false]

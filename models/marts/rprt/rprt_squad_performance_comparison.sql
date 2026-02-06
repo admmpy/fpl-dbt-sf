@@ -14,8 +14,23 @@ Optimized for dashboard display
 }}
 
 WITH base AS (
-    SELECT *
+    SELECT 
+        *,
+        MAX(recommended_at) OVER (PARTITION BY gameweek_id) AS latest_batch_at -- Latest recommendation batch for this gameweek
+
     FROM {{ ref('fct_model_analysis') }}
+),
+
+optimized_base AS (
+    SELECT 
+        *,
+        CASE 
+            WHEN recommended_at = latest_batch_at 
+                THEN TRUE
+            ELSE FALSE
+        END AS is_latest_version
+
+    FROM base
 ),
 
 players AS (
@@ -71,11 +86,12 @@ final AS (
         bs.is_current,
         bs.is_next,
         bs.is_previous,
+        bs.is_latest_version
 
-    FROM base                AS bs
-         LEFT JOIN players   AS pl ON bs.player_id = pl.player_id
-         LEFT JOIN teams     AS tm ON bs.team_id = tm.team_id
-         LEFT JOIN positions AS ps ON bs.position_id = ps.position_id      
+    FROM optimized_base         AS bs
+         LEFT JOIN players      AS pl ON bs.player_id = pl.player_id
+         LEFT JOIN teams        AS tm ON bs.team_id = tm.team_id
+         LEFT JOIN positions    AS ps ON bs.position_id = ps.position_id      
 )
 
 SELECT *
