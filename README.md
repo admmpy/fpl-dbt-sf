@@ -26,7 +26,7 @@ My approach for this projects differs with an ELT approach (previous was ETL) al
 # Next steps
 
 - Creating Dashboards in Looker Studios
-    - Optimal Squad Review
+    - ~~Optimal Squad Review~~
     - Model Reliability Monitor
     - Player & Team Scouting
 - Implementing AI Agent using LangChain
@@ -40,3 +40,4 @@ Optimal Squad Review
 1. The project is running on a 90 days Snowflake trial, thus will eventually end.
 2. The project started ingestion late in the season, meaning the dashboard will have limited lookback for now.
 3. The ML model is currently being iterated on to improve performance (visit `fpl-pipeline` - any recommendations for improvements is appreciated)
+4. Looker Studios can be inherently buggy to load (known issue if you use it long enough)
