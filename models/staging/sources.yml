@@ -16,7 +16,9 @@ sources:
           - name: GAMEWEEK_ID
             description: Gameweek identifier for the fixture
             tests:
-              - not_null
+              - not_null:
+                  config:
+                    where: "FIXTURE_ID != 307"  # Man City vs Crystal Palace fixture has no gameweek ID due to EFL Cup
           - name: KICKOFF_TIME
             description: Kickoff time for the fixture
           - name: TEAM_H
