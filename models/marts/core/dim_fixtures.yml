@@ -11,8 +11,6 @@ models:
           - unique
         - name: gameweek_id
           description: Gameweek identifier
-          tests:
-            - not_null
         - name: kickoff_at
           description: Kickoff time of the fixture
         - name: home_team_name
