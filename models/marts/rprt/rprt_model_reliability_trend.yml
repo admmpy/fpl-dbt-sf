@@ -1,0 +1,105 @@
+version: 2
+
+models:
+    - name: rprt_model_reliability_trend
+      description: Aggregated metrics from fct_model_analysis to analyse model performance on a gameweek basis
+
+      columns:
+        - name: gameweek_id
+          description: Gameweek identifier (Primary Key)
+          tests:
+            - not_null
+            - unique
+            - relationships:
+                arguments:
+                  to: ref('stg_gameweeks')
+                  field: gameweek_id
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 38
+                  
+        - name: recommended_at
+          description: Timestamp when the recommendation was generated
+          tests:
+            - not_null
+
+        - name: player_count
+          description: Number of players in the squad
+          tests:
+            - not_null
+            - accepted_values:
+                arguments:
+                  values: [11]
+
+        - name: total_predicted_points
+          description: Total predicted points by the squad
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+
+        - name: total_actual_points
+          description: Total actual points by the squad
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+
+        - name: avg_predicted_points
+          description: Average predicted points by the squad
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+
+        - name: avg_actual_points
+          description: Average actual points by the squad
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+
+        - name: mean_absolute_error
+          description: Mean absolute error between predicted and actual points
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+
+        - name: mean_error_bias
+          description: Mean error bias between predicted and actual points
+          tests:
+            - not_null
+
+        - name: cumulative_mae
+          description: Cumulative mean absolute error between predicted and actual points
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+
+        - name: cumulative_error_bias
+          description: Cumulative error bias between predicted and actual points
+          tests:
+            - not_null
+
+        - name: rolling_3gw_mae
+          description: Rolling 3 gameweek mean absolute error between predicted and actual points
+          tests:
+            - not_null
+            - dbt_utils.expression_is_true:
+                arguments:
+                  expression: ">= 0"
+
+        - name: rolling_3gw_error_bias
+          description: Rolling 3 gameweek error bias between predicted and actual points
+          tests:
+            - not_null
+          
