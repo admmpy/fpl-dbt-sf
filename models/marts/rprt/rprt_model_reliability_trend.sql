@@ -61,7 +61,7 @@ final AS (
             ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)  AS cumulative_mae,
         AVG(mean_error_bias) OVER (
             ORDER BY gameweek_id
-            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)   AS cumulative_error_bias,
+            ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)  AS cumulative_error_bias,
         AVG(mean_absolute_error) OVER (
             ORDER BY gameweek_id
             ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)          AS rolling_3gw_mae,
