@@ -17,9 +17,27 @@ SQLFLUFF_CONFIG="${SQLFLUFF_CONFIG:-.sqlfluff}"
 CMD=(
   sqlfluff lint
   --dialect snowflake
-  --templater dbt
   models tests macros
 )
+
+# Use dbt templater only when Snowflake creds are present.
+# In PRs without secrets (e.g., forks), fallback to jinja so style lint still runs.
+if [[ -n "${SQLFLUFF_TEMPLATER:-}" ]]; then
+  TEMPLATER="${SQLFLUFF_TEMPLATER}"
+elif [[ -n "${SNOWFLAKE_ACCOUNT:-}" && -n "${SNOWFLAKE_USER:-}" && -n "${SNOWFLAKE_PASSWORD:-}" ]]; then
+  TEMPLATER="dbt"
+else
+  TEMPLATER="jinja"
+fi
+
+CMD+=(--templater "${TEMPLATER}")
+
+if [[ "${TEMPLATER}" = "jinja" ]]; then
+  echo "Snowflake credentials not fully available. Using jinja templater for lint."
+  CMD+=(--ignore templating)
+else
+  echo "Using dbt templater for lint."
+fi
 
 if [[ -f "${STYLE_GUIDE_FILE}" ]]; then
   echo "Using style guide: ${STYLE_GUIDE_FILE}"

@@ -35,3 +35,6 @@ preferred_quoted_literal_style = single_quotes
 [sqlfluff:templater:dbt]
 project_dir = .
 profiles_dir = .github/dbt
+
+[sqlfluff:templater:jinja]
+apply_dbt_builtins = True
