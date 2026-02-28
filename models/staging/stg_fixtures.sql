@@ -14,6 +14,7 @@ The data is cast to appropriate data types for analysis and joined with other mo
 WITH sourced AS (
     SELECT *
     FROM {{ source('fpl_raw', 'fixtures') }}
+    WHERE FIXTURE_ID != 307  -- Man City vs Crystal Palace fixture has no gameweek ID due to EFL Cup
 ),
 
 final AS (
