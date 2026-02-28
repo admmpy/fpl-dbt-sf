@@ -1,7 +1,7 @@
 version: 2
 
 models:
-  - name: stg_fixtures_scheduled
+  - name: int_fixtures_scheduled
     description: Fixture data for FPL matches - No Mising Gameweek ID
     columns:
         - name: fixture_id
