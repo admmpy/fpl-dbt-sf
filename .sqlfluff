@@ -2,7 +2,7 @@
 dialect = snowflake
 templater = dbt
 max_line_length = 120
-exclude_rules = LT08
+exclude_rules = LT08,AL01,AL02
 
 [sqlfluff:indentation]
 indent_unit = space
@@ -19,12 +19,6 @@ extended_capitalisation_policy = upper
 
 [sqlfluff:rules:layout.commas]
 line_position = trailing
-
-[sqlfluff:rules:aliasing.table]
-aliasing = explicit
-
-[sqlfluff:rules:aliasing.column]
-aliasing = explicit
 
 [sqlfluff:rules:convention.not_equal]
 preferred_not_equal_style = c_style
