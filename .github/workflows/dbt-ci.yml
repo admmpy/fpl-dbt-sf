@@ -66,7 +66,18 @@ jobs:
             echo "DBT_SCHEMA=dbt_ci" >> "$GITHUB_ENV"
           fi
 
+      - name: Detect Snowflake credentials availability
+        run: |
+          if [ -n "${SNOWFLAKE_ACCOUNT}" ] && [ -n "${SNOWFLAKE_USER}" ] && [ -n "${SNOWFLAKE_PASSWORD}" ] && [ -n "${SNOWFLAKE_ROLE}" ] && [ -n "${SNOWFLAKE_WAREHOUSE}" ] && [ -n "${SNOWFLAKE_DATABASE}" ]; then
+            echo "HAS_DBT_CREDS=true" >> "$GITHUB_ENV"
+            echo "Snowflake credentials detected. Running full dbt validation."
+          else
+            echo "HAS_DBT_CREDS=false" >> "$GITHUB_ENV"
+            echo "Snowflake credentials missing. dbt parse/compile/docs/slim-build will be skipped."
+          fi
+
       - name: Build profiles.yml
+        if: env.HAS_DBT_CREDS == 'true'
         run: |
           mkdir -p "${DBT_PROFILES_DIR}"
           cat > "${DBT_PROFILES_DIR}/profiles.yml" <<'EOF'
@@ -87,9 +98,10 @@ jobs:
           EOF
 
       - name: Repo hygiene - dbt deps
-        run: dbt deps --project-dir "${DBT_PROJECT_DIR}" --profiles-dir "${DBT_PROFILES_DIR}"
+        run: dbt deps --project-dir "${DBT_PROJECT_DIR}"
 
       - name: Repo hygiene - dbt parse
+        if: env.HAS_DBT_CREDS == 'true'
         run: dbt parse --project-dir "${DBT_PROJECT_DIR}" --profiles-dir "${DBT_PROFILES_DIR}"
 
       - name: Repo hygiene - SQL lint (custom script or sqlfluff fallback)
@@ -120,12 +132,15 @@ jobs:
           fi
 
       - name: Compile validation
+        if: env.HAS_DBT_CREDS == 'true'
         run: dbt compile --project-dir "${DBT_PROJECT_DIR}" --profiles-dir "${DBT_PROFILES_DIR}"
 
       - name: Optional docs validation
+        if: env.HAS_DBT_CREDS == 'true'
         run: dbt docs generate --project-dir "${DBT_PROJECT_DIR}" --profiles-dir "${DBT_PROFILES_DIR}"
 
       - name: Download latest prod manifest artifact (for Slim CI)
+        if: env.HAS_DBT_CREDS == 'true'
         id: download_state
         continue-on-error: true
         uses: dawidd6/action-download-artifact@v6
@@ -137,6 +152,7 @@ jobs:
           path: state/prod
 
       - name: Slim CI build (state:modified+) with defer
+        if: env.HAS_DBT_CREDS == 'true'
         run: |
           if [ -f state/prod/manifest.json ]; then
             dbt build \
@@ -149,6 +165,10 @@ jobs:
             echo "No prod manifest found. Running full dbt build as fallback."
             dbt build --project-dir "${DBT_PROJECT_DIR}" --profiles-dir "${DBT_PROFILES_DIR}"
           fi
+
+      - name: Skipped dbt validation notice
+        if: env.HAS_DBT_CREDS != 'true'
+        run: echo "Skipping dbt parse/compile/docs/build because Snowflake credentials are not available in this run."
 
       - name: Upload CI artifacts
         if: always()

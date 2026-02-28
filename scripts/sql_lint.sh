@@ -59,30 +59,63 @@ failed=0
 
 echo "Running additional style-guide policy checks..."
 
+have_rg=0
+if command -v rg >/dev/null 2>&1; then
+  have_rg=1
+fi
+
 # 1) Prefer ON over USING in JOINs.
-if rg -n --glob '*.sql' -P '(?i)\busing\s*\(' models; then
+if [[ "${have_rg}" -eq 1 ]]; then
+  using_matches_cmd=(rg -n --glob '*.sql' -P '(?i)\busing\s*\(' models)
+else
+  using_matches_cmd=(grep -RInE --include='*.sql' '[Uu][Ss][Ii][Nn][Gg][[:space:]]*\(' models)
+fi
+
+if "${using_matches_cmd[@]}"; then
   echo "Policy failed: Use ON over USING in JOIN conditions." >&2
   failed=1
 fi
 
 # 2) Prefer UNION ALL over UNION.
-if rg -n --glob '*.sql' -P '(?i)\bunion\b(?!\s+all\b)' models; then
-  echo "Policy failed: Use UNION ALL instead of UNION." >&2
-  failed=1
+if [[ "${have_rg}" -eq 1 ]]; then
+  if rg -n --glob '*.sql' -P '(?i)\bunion\b(?!\s+all\b)' models; then
+    echo "Policy failed: Use UNION ALL instead of UNION." >&2
+    failed=1
+  fi
+else
+  if grep -RInE --include='*.sql' '[Uu][Nn][Ii][Oo][Nn]' models | grep -Evi 'union[[:space:]]+all'; then
+    echo "Policy failed: Use UNION ALL instead of UNION." >&2
+    failed=1
+  fi
 fi
 
 # 3) Prefer COALESCE over IFNULL/NVL.
-if rg -n --glob '*.sql' -P '(?i)\b(ifnull|nvl)\s*\(' models; then
+if [[ "${have_rg}" -eq 1 ]]; then
+  ifnull_nvl_cmd=(rg -n --glob '*.sql' -P '(?i)\b(ifnull|nvl)\s*\(' models)
+else
+  ifnull_nvl_cmd=(grep -RInE --include='*.sql' '(^|[^[:alnum:]_])([Ii][Ff][Nn][Uu][Ll][Ll]|[Nn][Vv][Ll])[[:space:]]*\(' models)
+fi
+
+if "${ifnull_nvl_cmd[@]}"; then
   echo "Policy failed: Use COALESCE instead of IFNULL/NVL." >&2
   failed=1
 fi
 
 # 4) If a model uses CTEs (WITH), require a final CTE named `final`.
 while IFS= read -r file; do
-  if rg -n -P '(?i)^\s*with\b' "${file}" >/dev/null; then
-    if ! rg -n -P '(?i)\bfinal\s+as\s*\(' "${file}" >/dev/null; then
-      echo "Policy failed: ${file} uses WITH but has no final CTE (final AS (...))." >&2
-      failed=1
+  if [[ "${have_rg}" -eq 1 ]]; then
+    if rg -n -P '(?i)^\s*with\b' "${file}" >/dev/null; then
+      if ! rg -n -P '(?i)\bfinal\s+as\s*\(' "${file}" >/dev/null; then
+        echo "Policy failed: ${file} uses WITH but has no final CTE (final AS (...))." >&2
+        failed=1
+      fi
+    fi
+  else
+    if grep -Ein '^[[:space:]]*[Ww][Ii][Tt][Hh]([[:space:]]|$)' "${file}" >/dev/null; then
+      if ! grep -Ein '(^|[^[:alnum:]_])[Ff][Ii][Nn][Aa][Ll][[:space:]]+[Aa][Ss][[:space:]]*\(' "${file}" >/dev/null; then
+        echo "Policy failed: ${file} uses WITH but has no final CTE (final AS (...))." >&2
+        failed=1
+      fi
     fi
   fi
 done < <(find models -type f -name '*.sql' | sort)

@@ -60,6 +60,20 @@ jobs:
             echo "DBT_SCHEMA=analytics" >> "$GITHUB_ENV"
           fi
 
+      - name: Validate required Snowflake secrets
+        run: |
+          missing=()
+          for key in SNOWFLAKE_ACCOUNT SNOWFLAKE_USER SNOWFLAKE_PASSWORD SNOWFLAKE_ROLE SNOWFLAKE_WAREHOUSE SNOWFLAKE_DATABASE; do
+            if [ -z "${!key}" ]; then
+              missing+=("${key}")
+            fi
+          done
+
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "Missing required secrets for CD: ${missing[*]}" >&2
+            exit 1
+          fi
+
       - name: Build profiles.yml
         run: |
           mkdir -p "${DBT_PROFILES_DIR}"
