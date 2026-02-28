@@ -1,0 +1,43 @@
+version: 2
+
+models:
+  - name: stg_fixtures_scheduled
+    description: Fixture data for FPL matches - No Mising Gameweek ID
+    columns:
+        - name: fixture_id
+          description: Unique identifier for the fixture
+          tests:
+          - not_null
+          - unique
+        - name: gameweek_id
+          description: Gameweek identifier for the fixture
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_gameweeks')
+                  field: gameweek_id
+        - name: kickoff_at
+          description: Kickoff time for the fixture
+        - name: home_team_id
+          description: Home team identifier
+          tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_teams')
+                field: team_id
+        - name: away_team_id
+          description: Away team identifier
+          tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_teams')
+                field: team_id
+        - name: home_team_score
+          description: Home team score
+        - name: away_team_score
+          description: Away team score
+        - name: is_finished
+          description: Whether the fixture has finished
