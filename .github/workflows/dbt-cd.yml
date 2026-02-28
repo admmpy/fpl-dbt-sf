@@ -1,0 +1,125 @@
+name: dbt CD
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: dbt-cd-main
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      DBT_PROFILES_DIR: .github/dbt
+      DBT_PROJECT_DIR: .
+      DBT_TARGET: prod
+      DBT_THREADS: "8"
+      DBT_PROFILE: fpl_development
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+      SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+      SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+      SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
+      DBT_PROD_SELECT: ${{ vars.DBT_PROD_SELECT }}
+      DBT_VERSION: ${{ vars.DBT_VERSION }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dbt
+        run: |
+          VERSION="${DBT_VERSION}"
+          if [ -z "${VERSION}" ]; then
+            VERSION="1.11.2"
+          fi
+
+          python -m pip install --upgrade pip
+          pip install "dbt-snowflake==${VERSION}"
+
+      - name: Set production schema default
+        run: |
+          if [ -n "${SNOWFLAKE_SCHEMA}" ]; then
+            echo "DBT_SCHEMA=${SNOWFLAKE_SCHEMA}" >> "$GITHUB_ENV"
+          else
+            echo "DBT_SCHEMA=analytics" >> "$GITHUB_ENV"
+          fi
+
+      - name: Build profiles.yml
+        run: |
+          mkdir -p "${DBT_PROFILES_DIR}"
+          cat > "${DBT_PROFILES_DIR}/profiles.yml" <<'EOF'
+          fpl_development:
+            target: prod
+            outputs:
+              prod:
+                type: snowflake
+                account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+                user: "{{ env_var('SNOWFLAKE_USER') }}"
+                password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+                role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+                warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+                database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+                schema: "{{ env_var('DBT_SCHEMA') }}"
+                threads: "{{ env_var('DBT_THREADS') | int }}"
+                client_session_keep_alive: false
+          EOF
+
+      - name: dbt deps
+        run: dbt deps --project-dir "${DBT_PROJECT_DIR}" --profiles-dir "${DBT_PROFILES_DIR}"
+
+      - name: dbt parse
+        run: dbt parse --project-dir "${DBT_PROJECT_DIR}" --profiles-dir "${DBT_PROFILES_DIR}"
+
+      - name: dbt compile
+        run: dbt compile --project-dir "${DBT_PROJECT_DIR}" --profiles-dir "${DBT_PROFILES_DIR}"
+
+      - name: dbt build (production scope)
+        run: |
+          SELECTOR="${DBT_PROD_SELECT}"
+          if [ -z "${SELECTOR}" ]; then
+            SELECTOR="*"
+          fi
+
+          dbt build \
+            --project-dir "${DBT_PROJECT_DIR}" \
+            --profiles-dir "${DBT_PROFILES_DIR}" \
+            --select "${SELECTOR}"
+
+      - name: dbt docs generate
+        run: dbt docs generate --project-dir "${DBT_PROJECT_DIR}" --profiles-dir "${DBT_PROFILES_DIR}"
+
+      - name: Upload prod manifest (for next PR Slim CI)
+        uses: actions/upload-artifact@v4
+        with:
+          name: prod-manifest
+          path: target/manifest.json
+          if-no-files-found: error
+
+      - name: Upload CD artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-cd-artifacts
+          path: |
+            target/manifest.json
+            target/run_results.json
+            target/catalog.json
+            target/index.html
+          if-no-files-found: ignore
