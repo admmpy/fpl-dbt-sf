@@ -18,8 +18,6 @@ CMD=(
   sqlfluff lint
   --dialect snowflake
   --templater dbt
-  --project-dir "${DBT_PROJECT_DIR}"
-  --profiles-dir "${DBT_PROFILES_DIR}"
   models tests macros
 )
 
