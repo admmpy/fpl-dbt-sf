@@ -1,16 +1,22 @@
 version: 2
 
 models:
-    - name: stg_fixtures
-      description: Fixture data for FPL matches
-      columns:
+  - name: stg_fixtures_scheduled
+    description: Fixture data for FPL matches - No Mising Gameweek ID
+    columns:
         - name: fixture_id
           description: Unique identifier for the fixture
           tests:
           - not_null
           - unique
         - name: gameweek_id
-          description: Gameweek identifier for the fixture # excluding null testing due fixture rescheduling being possible
+          description: Gameweek identifier for the fixture
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_gameweeks')
+                  field: gameweek_id
         - name: kickoff_at
           description: Kickoff time for the fixture
         - name: home_team_id

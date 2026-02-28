@@ -14,9 +14,7 @@ sources:
               - not_null
               - unique
           - name: GAMEWEEK_ID
-            description: Gameweek identifier for the fixture
-            tests:
-              - not_null
+            description: Gameweek identifier for the fixture # not_null testing will be implemented downstream on rprt and ml models
           - name: KICKOFF_TIME
             description: Kickoff time for the fixture
           - name: TEAM_H

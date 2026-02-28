@@ -9,6 +9,7 @@ models:
               combination_of_columns:
                 - player_id
                 - gameweek_id
+                - fixture_id
       columns:
         - name: player_id
           description: Unique identifier for the player

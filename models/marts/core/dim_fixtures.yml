@@ -10,9 +10,7 @@ models:
           - not_null
           - unique
         - name: gameweek_id
-          description: Gameweek identifier
-          tests:
-            - not_null
+          description: Gameweek identifier # keeping this nullable to include all fixtures
         - name: kickoff_at
           description: Kickoff time of the fixture
         - name: home_team_name
