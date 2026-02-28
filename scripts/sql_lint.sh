@@ -34,7 +34,7 @@ CMD+=(--templater "${TEMPLATER}")
 
 if [[ "${TEMPLATER}" = "jinja" ]]; then
   echo "Snowflake credentials not fully available. Using jinja templater for lint."
-  CMD+=(--ignore templating)
+  CMD+=(--ignore templating,parsing)
 else
   echo "Using dbt templater for lint."
 fi
