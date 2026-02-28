@@ -1,0 +1,183 @@
+name: dbt CI
+
+on:
+  pull_request:
+  push:
+    branches-ignore:
+      - main
+
+concurrency:
+  group: dbt-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    env:
+      DBT_PROFILES_DIR: .github/dbt
+      DBT_PROJECT_DIR: .
+      DBT_TARGET: ci
+      DBT_THREADS: "4"
+      DBT_PROFILE: fpl_development
+      SNOWFLAKE_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+      SNOWFLAKE_USER: ${{ secrets.SNOWFLAKE_USER }}
+      SNOWFLAKE_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+      SNOWFLAKE_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+      SNOWFLAKE_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+      SNOWFLAKE_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+      SNOWFLAKE_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
+      DBT_VERSION: ${{ vars.DBT_VERSION }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dbt + lint tooling
+        run: |
+          VERSION="${DBT_VERSION}"
+          if [ -z "${VERSION}" ]; then
+            VERSION="1.11.2"
+          fi
+
+          python -m pip install --upgrade pip
+          pip install \
+            "dbt-snowflake==${VERSION}" \
+            sqlfluff==3.2.5 \
+            sqlfluff-templater-dbt==3.2.5 \
+            yamllint==1.35.1 \
+            pre-commit==3.8.0
+
+      - name: Set CI schema name
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "DBT_SCHEMA=dbt_pr_${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
+          elif [ -n "${SNOWFLAKE_SCHEMA}" ]; then
+            echo "DBT_SCHEMA=${SNOWFLAKE_SCHEMA}" >> "$GITHUB_ENV"
+          else
+            echo "DBT_SCHEMA=dbt_ci" >> "$GITHUB_ENV"
+          fi
+
+      - name: Detect Snowflake credentials availability
+        run: |
+          if [ -n "${SNOWFLAKE_ACCOUNT}" ] && [ -n "${SNOWFLAKE_USER}" ] && [ -n "${SNOWFLAKE_PASSWORD}" ] && [ -n "${SNOWFLAKE_ROLE}" ] && [ -n "${SNOWFLAKE_WAREHOUSE}" ] && [ -n "${SNOWFLAKE_DATABASE}" ]; then
+            echo "HAS_DBT_CREDS=true" >> "$GITHUB_ENV"
+            echo "Snowflake credentials detected. Running full dbt validation."
+          else
+            echo "HAS_DBT_CREDS=false" >> "$GITHUB_ENV"
+            echo "Snowflake credentials missing. dbt parse/compile/docs/slim-build will be skipped."
+          fi
+
+      - name: Build profiles.yml
+        if: env.HAS_DBT_CREDS == 'true'
+        run: |
+          mkdir -p "${DBT_PROFILES_DIR}"
+          cat > "${DBT_PROFILES_DIR}/profiles.yml" <<'EOF'
+          fpl_development:
+            target: ci
+            outputs:
+              ci:
+                type: snowflake
+                account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+                user: "{{ env_var('SNOWFLAKE_USER') }}"
+                password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+                role: "{{ env_var('SNOWFLAKE_ROLE') }}"
+                warehouse: "{{ env_var('SNOWFLAKE_WAREHOUSE') }}"
+                database: "{{ env_var('SNOWFLAKE_DATABASE') }}"
+                schema: "{{ env_var('DBT_SCHEMA') }}"
+                threads: "{{ env_var('DBT_THREADS') | int }}"
+                client_session_keep_alive: false
+          EOF
+
+      - name: Repo hygiene - dbt deps
+        run: dbt deps --project-dir "${DBT_PROJECT_DIR}"
+
+      - name: Repo hygiene - dbt parse
+        if: env.HAS_DBT_CREDS == 'true'
+        run: dbt parse --project-dir "${DBT_PROJECT_DIR}" --profiles-dir "${DBT_PROFILES_DIR}"
+
+      - name: Repo hygiene - SQL lint (custom script or sqlfluff fallback)
+        run: |
+          if [ -x scripts/sql_lint.sh ]; then
+            scripts/sql_lint.sh
+          else
+            sqlfluff lint \
+              --dialect snowflake \
+              --templater dbt \
+              models tests macros
+          fi
+
+      - name: Repo hygiene - yamllint (only if configured)
+        run: |
+          if [ -f .yamllint ] || [ -f .yamllint.yaml ] || [ -f .yamllint.yml ]; then
+            yamllint .
+          else
+            echo "No yamllint config found, skipping"
+          fi
+
+      - name: Repo hygiene - pre-commit (only if configured)
+        run: |
+          if [ -f .pre-commit-config.yaml ]; then
+            pre-commit run --all-files --show-diff-on-failure
+          else
+            echo "No pre-commit config found, skipping"
+          fi
+
+      - name: Compile validation
+        if: env.HAS_DBT_CREDS == 'true'
+        run: dbt compile --project-dir "${DBT_PROJECT_DIR}" --profiles-dir "${DBT_PROFILES_DIR}"
+
+      - name: Optional docs validation
+        if: env.HAS_DBT_CREDS == 'true'
+        run: dbt docs generate --project-dir "${DBT_PROJECT_DIR}" --profiles-dir "${DBT_PROFILES_DIR}"
+
+      - name: Download latest prod manifest artifact (for Slim CI)
+        if: env.HAS_DBT_CREDS == 'true'
+        id: download_state
+        continue-on-error: true
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          workflow: dbt-cd.yml
+          branch: main
+          name: prod-manifest
+          path: state/prod
+
+      - name: Slim CI build (state:modified+) with defer
+        if: env.HAS_DBT_CREDS == 'true'
+        run: |
+          if [ -f state/prod/manifest.json ]; then
+            dbt build \
+              --project-dir "${DBT_PROJECT_DIR}" \
+              --profiles-dir "${DBT_PROFILES_DIR}" \
+              --select state:modified+ \
+              --defer \
+              --state state/prod
+          else
+            echo "No prod manifest found. Running full dbt build as fallback."
+            dbt build --project-dir "${DBT_PROJECT_DIR}" --profiles-dir "${DBT_PROFILES_DIR}"
+          fi
+
+      - name: Skipped dbt validation notice
+        if: env.HAS_DBT_CREDS != 'true'
+        run: echo "Skipping dbt parse/compile/docs/build because Snowflake credentials are not available in this run."
+
+      - name: Upload CI artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-ci-artifacts
+          path: |
+            target/manifest.json
+            target/run_results.json
+            target/catalog.json
+            target/index.html
+          if-no-files-found: ignore

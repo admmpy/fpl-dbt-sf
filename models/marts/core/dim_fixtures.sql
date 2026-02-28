@@ -26,7 +26,12 @@ WITH fixtures AS (
     FROM {{ ref('stg_fixtures') }} AS fx
          LEFT JOIN {{ ref('dim_teams') }} AS ht ON fx.home_team_id = ht.team_id
          LEFT JOIN {{ ref('dim_teams') }} AS at ON fx.away_team_id = at.team_id
+),
+
+final AS (
+    SELECT *
+    FROM fixtures
 )
 
 SELECT * 
-FROM fixtures
+FROM final
