@@ -9,6 +9,7 @@ models:
             combination_of_columns:
               - player_id
               - gameweek_id
+              - fixture_id # helps account for double gameweek fixtures
 
       columns:
         - name: player_gameweek_key

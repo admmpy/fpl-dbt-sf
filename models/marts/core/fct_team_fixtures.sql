@@ -44,9 +44,9 @@ player_teams AS (
         ph.expected_goal_involvements,
         ph.expected_goals_conceded
 
-    FROM player_history                         AS ph
-         INNER JOIN {{ ref('stg_fixtures') }}   AS fx ON ph.fixture_id = fx.fixture_id
-                                                         AND ph.gameweek_id = fx.gameweek_id
+    FROM player_history                                   AS ph
+         INNER JOIN {{ ref('int_fixtures_scheduled') }}   AS fx ON ph.fixture_id = fx.fixture_id
+                                                                   AND ph.gameweek_id = fx.gameweek_id
 ),
 
 team_aggregated AS (
@@ -74,30 +74,34 @@ team_aggregated AS (
 
 team_fixtures AS (
     SELECT
-        fixture_id,
-        gameweek_id,
-        home_team_id                                    AS team_id,
-        away_team_id                                    AS opponent_team_id,
-        TRUE                                            AS was_home,
-        home_team_score                                 AS team_score,
-        away_team_score                                 AS opponent_score,
-        is_finished
+        df.fixture_id,
+        df.gameweek_id,
+        df.home_team_id                                    AS team_id,
+        df.away_team_id                                    AS opponent_team_id,
+        TRUE                                               AS was_home,
+        df.home_team_score                                 AS team_score,
+        df.away_team_score                                 AS opponent_score,
+        df.is_finished
 
-    FROM {{ref ('dim_fixtures') }}
+    FROM {{ref ('dim_fixtures') }}                      AS df
+         INNER JOIN {{ref ('int_fixtures_scheduled')}}  AS fx ON df.fixture_id = fx.fixture_id
+                                                                 AND df.gameweek_id = fx.gameweek_id
 
     UNION ALL
 
     SELECT 
-        fixture_id,
-        gameweek_id,
-        away_team_id                                    AS team_id,
-        home_team_id                                    AS opponent_team_id,
-        FALSE                                           AS was_home,
-        away_team_score                                 AS team_score,
-        home_team_score                                 AS opponent_score,
-        is_finished
+        df.fixture_id,
+        df.gameweek_id,
+        df.away_team_id                                    AS team_id,
+        df.home_team_id                                    AS opponent_team_id,
+        FALSE                                              AS was_home,
+        df.away_team_score                                 AS team_score,
+        df.home_team_score                                 AS opponent_score,
+        df.is_finished
 
-    FROM {{ref ('dim_fixtures') }}
+    FROM {{ref ('dim_fixtures') }}                      AS df
+         INNER JOIN {{ref ('int_fixtures_scheduled')}}  AS fx ON df.fixture_id = fx.fixture_id
+                                                                 AND df.gameweek_id = fx.gameweek_id
 ),
 
 teams AS (
