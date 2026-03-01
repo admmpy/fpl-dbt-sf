@@ -16,6 +16,8 @@ models:
           description: Timestamp when the recommendation was generated
           tests:
             - not_null
+        - name: backfill_method
+          description: Marker for reconstructed historical backfills (null for normal runs)
         - name: gameweek_id
           description: Gameweek identifier
           tests:

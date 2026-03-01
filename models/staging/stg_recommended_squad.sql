@@ -20,6 +20,7 @@ final AS (
     SELECT 
         RECOMMENDATION_KEY              AS recommendation_key,
         RECOMMENDED_AT                  AS recommended_at,
+        BACKFILL_METHOD                 AS backfill_method,
         PLAYER_ID                       AS player_id,
         POSITION_ID                     AS position_id,
         TEAM_ID                         AS team_id,
