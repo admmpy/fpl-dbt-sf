@@ -63,6 +63,7 @@ positions AS (
 final AS (
     SELECT
         bs.recommended_at,
+        bs.backfill_method,
         bs.gameweek_id,
         bs.player_id,
         pl.web_name,

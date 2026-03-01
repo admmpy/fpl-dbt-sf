@@ -257,6 +257,8 @@ sources:
               - unique
           - name: RECOMMENDED_AT
             description: Timestamp when the recommendation was generated
+          - name: BACKFILL_METHOD
+            description: Marker for reconstructed historical backfills (null for normal runs)
           - name: PLAYER_ID
             description: Player identifier
           - name: POSITION_ID
@@ -283,4 +285,3 @@ sources:
           freshness:
             warn_after: {count: 3, period: day}
             error_after: {count: 7, period: day}
-
