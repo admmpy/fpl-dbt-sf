@@ -29,6 +29,7 @@ latest_recommendations AS (
     SELECT
         recommendation_key,
         recommended_at,
+        backfill_method,
         player_id,
         position_id,
         team_id,
@@ -79,6 +80,7 @@ final AS (
     SELECT
         fp.recommendation_key,
         fp.recommended_at,
+        fp.backfill_method,
         gw.is_finished,
         gw.is_current,
         gw.is_next,
