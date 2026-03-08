@@ -123,7 +123,7 @@ metrics:
     type: simple
     label: Error Bias
     type_params:
-      measure: total_bias
+      measure: bias
     filter: |
       {{ Dimension('model_analysis__is_finished') }} = TRUE
 
