@@ -1,6 +1,10 @@
 models:
   - name: metricflow_time_spine
     description: Daily time spine for MetricFlow.
+    config:
+      meta:
+        lightdash:
+          hidden: true
     time_spine:
       standard_granularity_column: date_day
     columns:

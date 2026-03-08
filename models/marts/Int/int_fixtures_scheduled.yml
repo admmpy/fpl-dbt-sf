@@ -3,6 +3,10 @@ version: 2
 models:
   - name: int_fixtures_scheduled
     description: Fixture data for FPL matches - No Mising Gameweek ID
+    config:
+      meta:
+        lightdash:
+          hidden: true
     columns:
         - name: fixture_id
           description: Unique identifier for the fixture

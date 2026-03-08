@@ -3,6 +3,10 @@ version: 2
 models:
     - name: int_player_rolling_stats
       description: Player rolling stats table showing rolling stats for each player
+      config:
+        meta:
+          lightdash:
+            hidden: true
       tests:
         - dbt_utils.unique_combination_of_columns:
             arguments:
