@@ -90,3 +90,49 @@ metrics:
     label: MAE
     type_params:
       measure: mae_avg
+    filter: |
+      {{ Dimension('model_analysis__is_finished') }} = TRUE
+
+  - name: predicted_points_total
+    description: Total predicted points
+    type: simple
+    label: Predicted Points
+    type_params:
+      measure: total_predicted_points
+  
+  - name: actual_points_total
+    description: Total actual points for finished gameweeks
+    type: simple
+    label: Actual Points
+    type_params:
+      measure: total_actual_points
+    filter: |
+      {{ Dimension('model_analysis__is_finished') }} = TRUE
+  
+  - name: absolute_error_total
+    description: Total absolute error between predicted and actual points for finished gameweeks
+    type: simple
+    label: Absolute Error
+    type_params:
+      measure: total_absolute_error
+    filter: |
+      {{ Dimension('model_analysis__is_finished') }} = TRUE
+
+  - name: bias_total
+    description: Total bias between predicted and actual points for finished gameweeks
+    type: simple
+    label: Error Bias
+    type_params:
+      measure: total_bias
+    filter: |
+      {{ Dimension('model_analysis__is_finished') }} = TRUE
+
+  - name: players_evaluated_count
+    description: Distinct players evaluated in finished gameweeks
+    type: simple
+    label: Players Evaluated
+    type_params:
+      measure: players_count
+    filter: |
+      {{ Dimension('model_analysis__is_finished') }} = TRUE
+
