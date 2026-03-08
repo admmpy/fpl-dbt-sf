@@ -3,6 +3,10 @@ version: 2
 models:
   - name: fct_players_gameweek
     description: Fact table showing player performance by gameweek and fixture
+    config:
+      meta:
+        lightdash:
+          hidden: true
     tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:

@@ -3,6 +3,10 @@ version: 2
 models:
     - name: stg_recommended_squad
       description: Recommended squad data from the ML/Optimization pipeline
+      config:
+        meta:
+          lightdash:
+            hidden: true
       tests:
         - dbt_utils.unique_combination_of_columns:
             arguments:

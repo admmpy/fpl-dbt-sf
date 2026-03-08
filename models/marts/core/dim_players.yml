@@ -3,6 +3,10 @@ version: 2
 models:
     - name: dim_players
       description: Player table showing latest player details and value
+      config:
+        meta:
+          lightdash:
+            hidden: true
       columns:
        - name: player_id
          description: Player identifier (Primary Key)
@@ -44,4 +48,3 @@ models:
          - dbt_utils.expression_is_true:
              arguments:
                expression: ">= 0"
-

@@ -9,6 +9,10 @@ models:
       This table aggregates player-level statistics to the team level and enriches
       with fixture context and team attributes. Includes both actual match results
       (goals scored/conceded) and expected metrics (xG, xA, xGC).
+    config:
+      meta:
+        lightdash:
+          hidden: true
     tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:

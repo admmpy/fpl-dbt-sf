@@ -3,6 +3,10 @@ version: 2
 models:
     - name: stg_gameweeks
       description: Gameweek data for FPL matches
+      config:
+        meta:
+          lightdash:
+            hidden: true
       columns:
         - name: gameweek_id
           description: Gameweek identifier

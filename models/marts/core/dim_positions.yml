@@ -3,6 +3,10 @@ version: 2
 models:
     - name: dim_positions
       description: Position dimension table showing position details
+      config:
+        meta:
+          lightdash:
+            hidden: true
       columns:
         - name: position_id
           description: Position identifier (Primary Key)
