@@ -74,7 +74,7 @@ semantic_models:
         agg: sum
 
       - name: players_count
-        description: sum of players
+        description: Distinct players evaluated
         expr: player_id
         agg: count_distinct
         
