@@ -4,6 +4,7 @@ semantic_models:
     model: ref('fct_model_analysis')
     defaults:
       agg_time_dimension: recommended_at
+
     entities:
       - name: recommendation_key
         type: primary
@@ -76,9 +77,16 @@ semantic_models:
         description: sum of players
         expr: player_id
         agg: count_distinct
-
-    metrics:
-      - name: mae
+        
+      - name: mae_avg
         description: Mean absolute error between predicted and actual points
         expr: absolute_error
-        agg: avg
+        agg: average
+
+metrics:
+  - name: mae
+    description: Mean absolute error between predicted and actual points
+    type: simple
+    label: MAE
+    type_params:
+      measure: mae_avg
