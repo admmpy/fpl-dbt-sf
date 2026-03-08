@@ -3,6 +3,10 @@ version: 2
 models:
     - name: stg_fixtures
       description: Fixture data for FPL matches
+      config:
+        meta:
+          lightdash:
+            hidden: true
       columns:
         - name: fixture_id
           description: Unique identifier for the fixture

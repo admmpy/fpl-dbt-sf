@@ -3,6 +3,10 @@ version: 2
 models:
     - name: stg_player_history
       description: Player history data for FPL matches
+      config:
+        meta:
+          lightdash:
+            hidden: true
       tests:
         - dbt_utils.unique_combination_of_columns:
             arguments:

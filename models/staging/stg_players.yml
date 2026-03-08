@@ -3,6 +3,10 @@ version: 2
 models:
     - name: stg_players
       description: Player statistics and details
+      config:
+        meta:
+          lightdash:
+            hidden: true
       columns:
         - name: player_id
           description: Unique identifier for the player

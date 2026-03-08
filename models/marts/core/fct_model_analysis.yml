@@ -3,6 +3,10 @@ version: 2
 models:
     - name: fct_model_analysis
       description: Model analysis table
+      config:
+        meta:
+          lightdash:
+            hidden: true
       tests:
         - dbt_utils.unique_combination_of_columns:
             arguments:

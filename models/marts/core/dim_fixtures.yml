@@ -3,6 +3,10 @@ version: 2
 models:
     - name: dim_fixtures
       description: Fixture table showing fixture details
+      config:
+        meta:
+          lightdash:
+            hidden: true
       columns:
         - name: fixture_id
           description: Fixture identifier (Primary Key)

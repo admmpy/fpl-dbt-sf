@@ -3,6 +3,10 @@ version: 2
 models:
     - name: fct_ml_player_features
       description: Feature table for machine learning model
+      config:
+        meta:
+          lightdash:
+            hidden: true
       tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:

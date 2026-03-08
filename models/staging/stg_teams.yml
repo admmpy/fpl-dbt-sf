@@ -3,6 +3,10 @@ version: 2
 models:
       - name: stg_teams
         description: Team information and fixtures
+        config:
+          meta:
+            lightdash:
+              hidden: true
         columns:
           - name: team_id
             description: Unique identifier for the team
@@ -59,5 +63,3 @@ models:
             description: Timestamp when the data was ingested
             tests:
               - not_null
-
-

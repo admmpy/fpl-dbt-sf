@@ -3,6 +3,10 @@ version: 2
 models:
   - name: dim_teams
     description: Team dimension table showing team details and strength metrics
+    config:
+      meta:
+        lightdash:
+          hidden: true
     columns:
       - name: team_id
         description: Team identifier (Primary Key)
