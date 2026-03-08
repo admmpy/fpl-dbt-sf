@@ -1,0 +1,138 @@
+semantic_models:
+  - name: model_analysis
+    description: Model analysis metrics by gameweek.
+    model: ref('fct_model_analysis')
+    defaults:
+      agg_time_dimension: recommended_at
+
+    entities:
+      - name: recommendation_key
+        type: primary
+        expr: recommendation_key
+
+      - name: player
+        type: foreign
+        expr: player_id
+
+      - name: gameweek
+        type: foreign
+        expr: gameweek_id
+
+      - name: position
+        type: foreign
+        expr: position_id
+
+      - name: team
+        type: foreign
+        expr: team_id
+
+    dimensions:
+      - name: recommended_at
+        type: time
+        type_params:
+          time_granularity: day
+
+      - name: is_finished
+        type: categorical
+        expr: is_finished
+
+      - name: is_starter
+        type: categorical
+        expr: is_starter
+        
+      - name: is_captain
+        type: categorical
+        expr: is_captain
+
+      - name: is_vice_captain
+        type: categorical
+        expr: is_vice_captain
+
+      - name: is_in_squad
+        type: categorical
+        expr: is_in_squad
+
+    measures:
+      - name: total_predicted_points
+        description: Points predicted by the model
+        expr: predicted_points
+        agg: sum
+
+      - name: total_actual_points
+        description: Points scored by the player
+        expr: actual_points
+        agg: sum
+
+      - name: total_absolute_error
+        description: Absolute error between predicted and actual points
+        expr: absolute_error
+        agg: sum
+
+      - name: bias
+        description: Error bias between predicted and actual points
+        expr: error_bias
+        agg: sum
+
+      - name: players_count
+        description: Distinct players evaluated
+        expr: player_id
+        agg: count_distinct
+        
+      - name: mae_avg
+        description: Mean absolute error between predicted and actual points
+        expr: absolute_error
+        agg: average
+
+metrics:
+  - name: mae
+    description: Mean absolute error between predicted and actual points
+    type: simple
+    label: MAE
+    type_params:
+      measure: mae_avg
+    filter: |
+      {{ Dimension('model_analysis__is_finished') }} = TRUE
+
+  - name: predicted_points_total
+    description: Total predicted points
+    type: simple
+    label: Predicted Points
+    type_params:
+      measure: total_predicted_points
+  
+  - name: actual_points_total
+    description: Total actual points for finished gameweeks
+    type: simple
+    label: Actual Points
+    type_params:
+      measure: total_actual_points
+    filter: |
+      {{ Dimension('model_analysis__is_finished') }} = TRUE
+  
+  - name: absolute_error_total
+    description: Total absolute error between predicted and actual points for finished gameweeks
+    type: simple
+    label: Absolute Error
+    type_params:
+      measure: total_absolute_error
+    filter: |
+      {{ Dimension('model_analysis__is_finished') }} = TRUE
+
+  - name: bias_total
+    description: Total bias between predicted and actual points for finished gameweeks
+    type: simple
+    label: Error Bias
+    type_params:
+      measure: bias
+    filter: |
+      {{ Dimension('model_analysis__is_finished') }} = TRUE
+
+  - name: players_evaluated_count
+    description: Distinct players evaluated in finished gameweeks
+    type: simple
+    label: Players Evaluated
+    type_params:
+      measure: players_count
+    filter: |
+      {{ Dimension('model_analysis__is_finished') }} = TRUE
+

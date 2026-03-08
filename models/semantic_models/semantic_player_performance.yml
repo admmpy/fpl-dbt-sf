@@ -68,6 +68,20 @@ metrics:
     type_params:
       measure: goals_sum
 
+  - name: total_assists
+    description: Total assists scored.
+    type: simple
+    label: Total Assists
+    type_params:
+      measure: assists_sum
+
+  - name: total_xg
+    description: Total expected goals scored.
+    type: simple
+    label: Total Expected Goals
+    type_params:
+      measure: xg_sum
+
   - name: total_minutes
     description: Total minutes played.
     type: simple
