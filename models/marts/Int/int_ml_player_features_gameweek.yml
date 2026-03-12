@@ -1,0 +1,100 @@
+version: 2
+
+models:
+    - name: int_ml_player_features_gameweek
+      description: ML feature table collapsed to player-gameweek grain for serving and double gameweek handling
+      tests:
+        - dbt_utils.unique_combination_of_columns:
+            arguments:
+              combination_of_columns:
+                - player_id
+                - gameweek_id
+
+      columns:
+        - name: player_gameweek_key
+          description: Primary key generated from player_id and gameweek_id after double gameweek aggregation
+          tests:
+            - not_null
+            - unique
+
+        - name: player_id
+          description: Player identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_players')
+                  field: player_id
+
+        - name: gameweek_id
+          description: Gameweek identifier
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('stg_gameweeks')
+                  field: gameweek_id
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 38
+
+        - name: team_id
+          description: Identifier for the player's team
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_teams')
+                  field: team_id
+
+        - name: opponent_team_id
+          description: Identifier for the opponent team
+          tests:
+            - not_null
+            - relationships:
+                arguments:
+                  to: ref('dim_teams')
+                  field: team_id
+
+        - name: total_points
+          description: Total points scored in the gameweek after fixture-level aggregation
+          tests:
+            - not_null
+
+        - name: minutes_played
+          description: Minutes played in the gameweek after fixture-level aggregation
+          tests:
+            - not_null
+
+        - name: now_cost
+          description: Player cost for the selected snapshot row
+          tests:
+            - not_null
+
+        - name: total_games_played
+          description: Total games played at selected snapshot
+          tests:
+            - not_null
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 0
+                  max_value: 38
+
+        - name: team_position
+          description: Current league position of the player's team
+          tests:
+            - not_null
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 20
+
+        - name: opponent_team_position
+          description: Current league position of the opponent team
+          tests:
+            - not_null
+            - dbt_utils.accepted_range:
+                arguments:
+                  min_value: 1
+                  max_value: 20
